@@ -56,6 +56,19 @@ body {
     white-space: pre-wrap;
 }
 
+.chat-message p {
+    margin-bottom: 10px;
+}
+
+.chat-message ul, .chat-message ol {
+    margin-left: 20px;
+    margin-bottom: 10px;
+}
+
+.chat-message > *:last-child {
+    margin-bottom: 0;
+}
+
 .user {
     align-self: flex-end;
     background-color: #393939;
