@@ -53,16 +53,23 @@ body {
     font-size: 16px;
     line-height: 1.6;
     word-wrap: break-word;
-    white-space: pre-wrap;
 }
 
 .chat-message p {
-    margin-bottom: 10px;
+    margin-bottom: 12px;
 }
 
 .chat-message ul, .chat-message ol {
     margin-left: 20px;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
+}
+
+.chat-message li {
+    margin-bottom: 6px; 
+}
+
+.chat-message li p {
+    margin: 0; 
 }
 
 .chat-message > *:last-child {
@@ -79,7 +86,7 @@ body {
 .bot {
     align-self: flex-start;
     background-color: transparent; 
-    color: #ececec; /* Slightly softened white for readability */
+    color: #ececec;
     padding: 14px 0;
 }
 
@@ -89,7 +96,7 @@ body {
     background: #1f1f1f;
     gap: 12px;
     padding-bottom: 30px;
-    border-top: 1px solid #333; /* Adds a nice divider line */
+    border-top: 1px solid #333;
 }
 
 #user-input {
@@ -106,7 +113,7 @@ body {
 
 #user-input:focus {
     background-color: #2f2f2f;
-    border-color: #555555; /* Subtle highlight when typing */
+    border-color: #555555;
 }
 
 #send-btn {
