@@ -1,0 +1,112 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #1a1a1a;
+    display: flex;
+    justify-content: center;
+    height: 100vh;
+    overflow: hidden; /* Prevents the whole page from scrolling */
+}
+
+.chat-container {
+    width: 100%;
+    max-width: 800px;
+    background: #1f1f1f;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    box-shadow: 0 0 15px rgba(0,0,0,0.5); /* Darkened shadow for dark mode */
+}
+
+.chat-box {
+    flex: 1; /* This forces the box to take up all available vertical space */
+    padding: 40px 20px;
+    overflow-y: auto; /* Enables scrolling just for the messages */
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* Customizing the scrollbar for dark mode */
+.chat-box::-webkit-scrollbar {
+    width: 8px;
+}
+.chat-box::-webkit-scrollbar-track {
+    background: #1f1f1f;
+}
+.chat-box::-webkit-scrollbar-thumb {
+    background: #393939;
+    border-radius: 4px;
+}
+.chat-box::-webkit-scrollbar-thumb:hover {
+    background: #555555;
+}
+
+.chat-message {
+    max-width: 80%;
+    padding: 14px 18px;
+    font-size: 16px;
+    line-height: 1.6;
+    word-wrap: break-word;
+}
+
+.user {
+    align-self: flex-end;
+    background-color: #393939;
+    color: #ffffff;
+    border-radius: 20px 20px 4px 20px; 
+}
+
+.bot {
+    align-self: flex-start;
+    background-color: transparent; 
+    color: #ececec; /* Slightly softened white for readability */
+    padding: 14px 0;
+}
+
+.input-container {
+    display: flex;
+    padding: 20px 24px;
+    background: #1f1f1f;
+    gap: 12px;
+    padding-bottom: 30px;
+    border-top: 1px solid #333; /* Adds a nice divider line */
+}
+
+#user-input {
+    color: white;
+    flex: 1;
+    padding: 16px 24px;
+    background-color: #2a2a2a;
+    border: 1px solid transparent;
+    border-radius: 30px;
+    font-size: 16px;
+    outline: none;
+    transition: border-color 0.2s, background-color 0.2s;
+}
+
+#user-input:focus {
+    background-color: #2f2f2f;
+    border-color: #555555; /* Subtle highlight when typing */
+}
+
+#send-btn {
+    background-color: #ececec;
+    color: rgb(0, 0, 0);
+    border: none;
+    border-radius: 30px;
+    padding: 0 24px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+#send-btn:hover {
+    background-color: #ffffff;
+}

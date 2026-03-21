@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <link rel="icon" type="image/x-icon" href="/static/images/singleNEO.png">
+    <link rel="stylesheet" href="/static/CSS/auth.css">
+</head>
+<body>
+    <div class="auth-wrapper">
+        <div class="auth-card">
+            <img src="/static/images/NEO.png" width="100" height="auto">
+            <h2>Create an Account</h2>
+            <form class="auth-form" action="/register" method="POST">
+                <input type="text" name="username" class="auth-input" placeholder="Create a username" required>
+                <input type="password" name="password" class="auth-input" placeholder="Create a password" required>
+                <button type="submit" class="auth-btn">Sign Up</button>
+            </form>
+            <div class="auth-link">
+                Already have an account? <a href="/login">Log in</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
