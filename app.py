@@ -45,7 +45,7 @@ def register():
         if db.create_user(username, password):
             session["user"] = username
             return redirect(url_for("chat"))
-        return "Username exists"
+        return render_template("register.html", error="Account exists")
 
     return render_template("register.html")
 
@@ -58,7 +58,7 @@ def login():
         if db.verify_user(username, password):
             session["user"] = username
             return redirect(url_for("chat"))
-        return "Invalid credentials"
+        return render_template("login.html", error="Invalid credentials")
 
     return render_template("login.html")
 

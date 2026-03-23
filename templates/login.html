@@ -12,6 +12,13 @@
         <div class="auth-card">
             <img src="/static/images/NEO.png" width="100" height="auto">
             <h2>Welcome</h2>
+            
+            {% if error %}
+            <div class="auth-error">
+                {{ error }}
+            </div>
+            {% endif %}
+
             <form class="auth-form" action="/login" method="POST">
                 <input type="text" name="username" class="auth-input" placeholder="Username" required>
                 <input type="password" name="password" class="auth-input" placeholder="Password" required>
