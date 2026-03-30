@@ -43,7 +43,7 @@ def register():
         email = request.form.get("email")
         password = request.form.get("password")
 
-        if db.create_user(username, password):
+        if db.create_user(username, email, password):
             session["user"] = username
             return redirect(url_for("chat"))
         return render_template("register.html", error="Account already exists")
@@ -62,6 +62,17 @@ def login():
         return render_template("login.html", error="Invalid credentials")
 
     return render_template("login.html")
+
+@app.route("/forgot-password", methods=["GET", "POST"])
+def forgot_password():
+    if request.method == "POST":
+        email = request.form.get("email")
+        
+        # NOTE: For now, this just acts as a placeholder. 
+        # To actually send emails, you would integrate something like Flask-Mail here.
+        return render_template("forgot_password.html", message="If that email is in our system, a reset link has been sent.")
+        
+    return render_template("forgot_password.html")
 
 @app.route("/profile", methods=["GET", "POST"])
 def profile():

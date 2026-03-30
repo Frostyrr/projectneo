@@ -11,12 +11,12 @@ class Database:
         self.chat_history = self.db.chat_history
         self.reminders = self.db.reminders
 
-    def create_user(self, username, password):
+    def create_user(self, username, email, password):
         if self.users.find_one({"username": username}):
             return False # User exists
         self.users.insert_one({
             "username": username,
-            "email": email,
+            "email": email, # Now this will work
             "password": generate_password_hash(password)
         })
         return True
@@ -31,17 +31,18 @@ class Database:
         return self.users.find_one({"username": username})
     
     def update_user(self, username, new_email = None, new_password=None):
-        update_fields = {}
-        if new_email:
-            update_fields["email"] = new_email
+            update_fields = {}
+            if new_email:
+                update_fields["email"] = new_email
 
-        if new_password:
-            update_fields["password"] = generate_password_hash(new_password)
-        
-        if update_fields:
-            self.users.update_one({"username": username}), {"$set": update_fields}
-            return True
-        return False
+            if new_password:
+                update_fields["password"] = generate_password_hash(new_password)
+            
+            if update_fields:
+                # FIX: Moved the closing parenthesis to the end of the line
+                self.users.update_one({"username": username}, {"$set": update_fields})
+                return True
+            return False
 
     def save_chat(self, username, messages):
         self.chat_history.update_one(
