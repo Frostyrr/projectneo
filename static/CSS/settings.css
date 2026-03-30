@@ -79,7 +79,7 @@ body {
 .avatar-circle {
     width: 64px;
     height: 64px;
-    background: linear-gradient(135deg, #4b90ff, #8a2be2);
+    background: linear-gradient(135deg, #125224, #1c6f23);
     border-radius: 50%;
     display: flex;
     align-items: center;
