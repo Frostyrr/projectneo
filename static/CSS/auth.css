@@ -386,7 +386,6 @@ body {
     animation: fadeUp 1.8s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
 }
 
-/* Stagger the feature cards so they appear one after the other */
 .features-grid .feature-card:nth-child(1) {
     animation-delay: 0.6s;
 }
@@ -401,13 +400,11 @@ body {
                 transform 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
-/* The final state (visible and in place) */
 .scroll-show {
     opacity: 1;
     transform: translateY(0);
 }
 
-/* Stagger the feature cards so they slide up one after the other */
 .features-grid .feature-card:nth-child(2) {
     transition-delay: 0.2s;
 }
