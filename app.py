@@ -46,6 +46,7 @@ def register():
         if db.create_user(username, email, password):
             session["user"] = username
             return redirect(url_for("login"))
+            return redirect(url_for("chat"))
         return render_template("register.html", error="Account already exists")
 
     return render_template("register.html")
@@ -59,9 +60,45 @@ def login():
         if db.verify_user(username, password):
             session["user"] = username
             return redirect(url_for("chat"))
-        return "Invalid credentials"
+        return render_template("login.html", error="Invalid credentials")
 
     return render_template("login.html")
+
+@app.route("/forgot-password", methods=["GET", "POST"])
+def forgot_password():
+    if request.method == "POST":
+        email = request.form.get("email")
+        
+        # NOTE: For now, this just acts as a placeholder. 
+        # To actually send emails, you would integrate something like Flask-Mail here.
+        return render_template("forgot_password.html", message="If that email is in our system, a reset link has been sent.")
+        
+    return render_template("forgot_password.html")
+
+@app.route("/profile", methods=["GET", "POST"])
+def profile():
+    if "user" not in session:
+        return redirect(url_for("login"))
+    
+    username = session["user"]
+    user_data = db.get_user(username)
+    current_email = user_data.get("email", "") if user_data else ""
+    
+    message = None
+    if request.method == "POST":
+        new_email = request.form.get("email")
+        new_password = request.form.get("password")
+        
+        if new_password:
+            db.update_user(username, new_email=new_email, new_password=new_password)
+            message = "Profile and password updated successfully!"
+        else:
+            db.update_user(username, new_email=new_email)
+            message = "Profile updated successfully!"
+        
+        current_email = new_email
+        
+    return render_template("profile.html", username=username, email=current_email, message=message)
 
 @app.route("/logout")
 def logout():
