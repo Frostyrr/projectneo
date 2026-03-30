@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register - Neo Assistant</title>
+    <title>Register - Neo</title>
     <link rel="icon" type="image/x-icon" href="/static/images/singleNEO.png">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <link rel="stylesheet" href="/static/CSS/auth.css">
@@ -61,9 +61,11 @@
 
                         <div class="input-group">
                             <label for="password">Password</label>
-                            <div class="input-with-icon">
+                            <div class="input-with-icon" style="position: relative;">
                                 <span class="material-symbols-rounded">lock</span>
-                                <input type="password" id="password" name="password" placeholder="Create a password" required>
+                                <input type="password" id="password" name="password" placeholder="Enter password" required>
+                                
+                                <span class="material-symbols-rounded toggle-password" title="Show Password">visibility</span>
                             </div>
                         </div>
 
@@ -111,5 +113,6 @@
         </div>
     </section>
 
+   <script src="/static/JS/auth.js"></script>
 </body>
 </html>

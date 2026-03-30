@@ -70,26 +70,3 @@ function appendMessage(message, sender) {
     // Smooth scroll to bottom
     chatBox.scrollTop = chatBox.scrollHeight;
 }
-
-document.addEventListener("DOMContentLoaded", function() {
-    
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-
-            if (entry.isIntersecting) {
-                entry.target.classList.add('scroll-show');
-
-                observer.unobserve(entry.target); 
-            }
-        });
-    }, {
-        threshold: 0.15
-    });
-
-    const elementsToAnimate = document.querySelectorAll('.section-title, .feature-card, #about div, #contact div');
-
-    elementsToAnimate.forEach((el) => {
-        el.classList.add('scroll-hidden');
-        observer.observe(el);
-    });
-});
