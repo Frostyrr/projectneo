@@ -202,7 +202,7 @@ body {
 
 .welcome-screen h1 {
     font-size: 48px;
-    background: -webkit-linear-gradient(45deg, #1e5737, #07b162);
+    background: -webkit-linear-gradient(45deg, #0d763a, #00e078);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     margin-bottom: 12px;

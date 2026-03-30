@@ -32,39 +32,84 @@
             </div>
 
             <div class="hero-form-section">
-                <div class="auth-card-light">
-                    <div class="auth-card-title">REGISTER</div>
+                <div class="auth-card">
+                    <h2 class="auth-card-title">Create an account</h2>
                     
                     {% if error %}
-                    <div class="auth-error">{{ error }}</div>
+                    <div class="auth-error">
+                        <span class="material-symbols-rounded" style="font-size: 18px;">error</span>
+                        {{ error }}
+                    </div>
                     {% endif %}
 
                     <form class="auth-form" action="/register" method="POST">
-                        <div class="input-with-icon">
-                            <span class="material-symbols-rounded">person</span>
-                            <input type="text" name="username" placeholder="Enter username" required>
+                        <div class="input-group">
+                            <label for="username">Username</label>
+                            <div class="input-with-icon">
+                                <span class="material-symbols-rounded">person</span>
+                                <input type="text" id="username" name="username" placeholder="Choose a username" required>
+                            </div>
                         </div>
 
-                        <div class="input-with-icon">
-                            <span class="material-symbols-rounded">mail</span>
-                            <input type="email" name="email" placeholder="Enter email address" required>
+                        <div class="input-group">
+                            <label for="email">Email Address</label>
+                            <div class="input-with-icon">
+                                <span class="material-symbols-rounded">mail</span>
+                                <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                            </div>
                         </div>
 
-                        <div class="input-with-icon">
-                            <span class="material-symbols-rounded">lock</span>
-                            <input type="password" name="password" placeholder="Enter password" required>
+                        <div class="input-group">
+                            <label for="password">Password</label>
+                            <div class="input-with-icon">
+                                <span class="material-symbols-rounded">lock</span>
+                                <input type="password" id="password" name="password" placeholder="Create a password" required>
+                            </div>
                         </div>
 
-                        <button type="submit" class="btn-gradient">SIGN UP</button>
+                        <button type="submit" class="btn-primary" style="margin-top: 20px;">Sign up</button>
                     </form>
 
-                    <div class="auth-divider">OR</div>
-                    
-                    <a href="/login" class="auth-link">LOGIN INSTEAD</a>
+                    <div class="auth-footer">
+                        Already have an account? <a href="/login" class="auth-link">Log in</a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <section id="features" class="landing-section">
+        <h2 class="section-title">Core Features</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <span class="material-symbols-rounded">security</span>
+                <h3>Secure Architecture</h3>
+                <p>Built with robust security protocols and encrypted password hashing to ensure your workflow and personal data remain protected.</p>
+            </div>
+            <div class="feature-card">
+                <span class="material-symbols-rounded">schedule</span>
+                <h3>Task Management</h3>
+                <p>Never miss a deadline. Set reminders, manage academic projects, and keep your daily schedule strictly organized.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="landing-section" style="background-color: #1a1a1c;">
+        <h2 class="section-title">About Neo</h2>
+        <div style="max-width: 800px; margin: 0 auto; text-align: center; line-height: 1.8; color: #a0a0a0; font-size: 18px;">
+            <p>Neo is an ongoing developmental project by Caraga State University - CC BSIT Students.</p>
+        </div>
+    </section>
+
+    <section id="contact" class="landing-section">
+        <h2 class="section-title">Contact</h2>
+        <div style="text-align: center; color: #a0a0a0;">
+            <p>Have questions about the system architecture or want to report a bug?</p>
+            <p style="margin-top: 20px; font-size: 15px;">
+                <span class="material-symbols-rounded">mail</span> marcelson.rebato@csucc.edu.ph | eliruzel.almonia@csucc.edu.ph
+            </p>
+        </div>
+    </section>
 
 </body>
 </html>
