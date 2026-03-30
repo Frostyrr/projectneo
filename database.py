@@ -1,4 +1,3 @@
-# database.py
 from pymongo import MongoClient
 from werkzeug.security import generate_password_hash, check_password_hash
 import certifi
@@ -16,6 +15,7 @@ class Database:
             return False # User exists
         self.users.insert_one({
             "username": username,
+            "email": email,
             "password": generate_password_hash(password)
         })
         return True

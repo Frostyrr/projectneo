@@ -40,12 +40,13 @@ def home():
 def register():
     if request.method == "POST":
         username = request.form.get("username")
+        email = request.form.get("email")
         password = request.form.get("password")
 
-        if db.create_user(username, password):
+        if db.create_user(username, email, password):
             session["user"] = username
-            return redirect(url_for("chat"))
-        return "Username exists"
+            return redirect(url_for("login"))
+        return render_template("register.html", error="Account already exists")
 
     return render_template("register.html")
 
