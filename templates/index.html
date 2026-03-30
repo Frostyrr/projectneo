@@ -3,32 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neo</title>
+    <title>Neo Assistant</title>
     <link rel="icon" type="image/x-icon" href="/static/images/singleNEO.png">
     <link rel="stylesheet" href="/static/CSS/chat.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 </head>
 <body>
-    <div class="chat-container">
+    <div class="app-container">
+        <nav id="sidebar" class="sidebar">
+            <div class="sidebar-top">
+                <button id="menu-btn" class="icon-btn" title="Collapse menu">
+                    <span class="material-symbols-rounded">menu</span>
+                </button>
+            </div>
+            
+            <div class="sidebar-new-chat">
+                <button id="new-chat-btn" class="new-chat-btn">
+                    <span class="material-symbols-rounded">add</span>
+                    <span>New chat</span>
+                </button>
+            </div>
 
-        <div style=
-            "padding: 15px 20px;
-            border-bottom: 1px solid #333;
-            display: flex; justify-content: space-between;
-            align-items: center;"
-        >
-            <img src="/static/images/NEO.png" alt="Neo" width="50" height="auto">
-            <a href="/logout" style="color: #ececec; text-decoration: none; font-size: 14px;">Log Out</a>
-        </div>
-        <div id="chat-box" class="chat-box"></div>
-        
-        <div class="input-container">
-            <input type="text" id="user-input" placeholder="Ask anything" autocomplete="off">
-            <button id="send-btn">Send</button>
-        </div>
+            <div class="sidebar-middle">
+                <p class="recent-title">Recent</p>
+                <ul class="recent-list">
+                    <li>
+                        <a href="#">
+                            <span class="material-symbols-rounded" style="font-size: 18px;">history</span>
+                            Chat History
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="sidebar-bottom">
+                <ul class="sidebar-menu">
+                    <li>
+                        <a href="/profile">
+                            <span class="material-symbols-rounded">settings</span>
+                            Settings
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/logout">
+                            <span class="material-symbols-rounded">logout</span>
+                            Log Out
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <header class="chat-header">
+                <button id="open-menu-btn" class="icon-btn hidden">
+                    <span class="material-symbols-rounded">menu</span>
+                </button>
+                <div class="header-title">
+                    <h2>Neo</h2>
+                    <span class="version-badge">1.0</span>
+                </div>
+                <img src="/static/images/singleNEO.png" alt="Neo" class="header-logo">
+            </header>
+
+            <div id="chat-box" class="chat-box">
+                <div id="welcome-screen" class="welcome-screen">
+                    <h1>Hello, {{ session.get('user', 'User') }}</h1>
+                    <p>How can I help you today?</p>
+                </div>
+            </div>
+
+            <div class="input-wrapper">
+                <div class="input-container">
+                    <input type="text" id="user-input" placeholder="Ask Neo..." autocomplete="off">
+                    <button id="send-btn" class="send-icon-btn">
+                        <span class="material-symbols-rounded">send</span>
+                    </button>
+                </div>
+                <p class="disclaimer">Neo may display inaccurate info, so double-check its responses.</p>
+            </div>
+        </main>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="/static/JS/script.js"></script>
-</body>
 </body>
 </html>

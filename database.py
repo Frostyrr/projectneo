@@ -16,6 +16,7 @@ class Database:
             return False # User exists
         self.users.insert_one({
             "username": username,
+            "email": email,
             "password": generate_password_hash(password)
         })
         return True
@@ -23,6 +24,22 @@ class Database:
     def verify_user(self, username, password):
         user = self.users.find_one({"username": username})
         if user and check_password_hash(user["password"], password):
+            return True
+        return False
+    
+    def get_user(self, username):
+        return self.users.find_one({"username": username})
+    
+    def update_user(self, username, new_email = None, new_password=None):
+        update_fields = {}
+        if new_email:
+            update_fields["email"] = new_email
+
+        if new_password:
+            update_fields["password"] = generate_password_hash(new_password)
+        
+        if update_fields:
+            self.users.update_one({"username": username}), {"$set": update_fields}
             return True
         return False
 

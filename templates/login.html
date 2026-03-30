@@ -3,31 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Log In</title>
+    <title>Neo - Intelligent Assistant</title>
     <link rel="icon" type="image/x-icon" href="/static/images/singleNEO.png">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <link rel="stylesheet" href="/static/CSS/auth.css">
 </head>
 <body>
-    <div class="auth-wrapper">
-        <div class="auth-card">
-            <img src="/static/images/NEO.png" width="100" height="auto">
-            <h2>Welcome</h2>
-            
-            {% if error %}
-            <div class="auth-error">
-                {{ error }}
-            </div>
-            {% endif %}
 
-            <form class="auth-form" action="/login" method="POST">
-                <input type="text" name="username" class="auth-input" placeholder="Username" required>
-                <input type="password" name="password" class="auth-input" placeholder="Password" required>
-                <button type="submit" class="auth-btn">Log In</button>
-            </form>
-            <div class="auth-link">
-                Don't have an account? <a href="/register">Sign up</a>
+    <div id="home" class="landing-hero">
+        <nav class="landing-nav">
+            <a href="#" class="nav-brand">NEO ASST.</a>
+            <div class="nav-links">
+                <a href="#home">Home</a>
+                <a href="#features">Features</a>
+                <a href="#about">About</a>
+                <a href="#contact">Contact</a>
+            </div>
+        </nav>
+
+        <div class="hero-content-wrapper">
+            <div class="hero-text-section">
+                <h1>Secure.</h1>
+                <h2>Intelligent Assistant Platform</h2>
+                <p>Designed with a cybersecurity-first approach, Neo helps you manage your schedules, debug Python and Java code, and organize your daily tasks seamlessly. Built for the modern IT professional.</p>
+                <a href="#features" class="btn-outline">LEARN MORE</a>
+            </div>
+
+            <div class="hero-form-section">
+                <div class="auth-card-light">
+                    <div class="auth-card-title">LOGIN</div>
+                    
+                    {% if error %}
+                    <div class="auth-error">{{ error }}</div>
+                    {% endif %}
+
+                    <form class="auth-form" action="/login" method="POST">
+                        <div class="input-with-icon">
+                            <span class="material-symbols-rounded">person</span>
+                            <input type="text" name="username" placeholder="Enter username" required>
+                        </div>
+
+                        <div class="input-with-icon">
+                            <span class="material-symbols-rounded">lock</span>
+                            <input type="password" name="password" placeholder="Enter password" required>
+                        </div>
+
+                        <button type="submit" class="btn-gradient">LOGIN</button>
+                    </form>
+
+                    <div class="auth-divider">OR</div>
+                    
+                    <a href="/register" class="auth-link">CREATE AN ACCOUNT</a>
+                </div>
             </div>
         </div>
     </div>
+
+    <section id="features" class="landing-section">
+        <h2 class="section-title">Core Features</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <span class="material-symbols-rounded">code</span>
+                <h3>Code Assistance</h3>
+                <p>Advanced algorithmic support for debugging and optimizing complex data structures in Python, Java, and Vue.js.</p>
+            </div>
+            <div class="feature-card">
+                <span class="material-symbols-rounded">security</span>
+                <h3>Secure Architecture</h3>
+                <p>Built with robust security protocols and encrypted password hashing to ensure your workflow and personal data remain protected.</p>
+            </div>
+            <div class="feature-card">
+                <span class="material-symbols-rounded">schedule</span>
+                <h3>Task Management</h3>
+                <p>Never miss a deadline. Set reminders, manage academic projects, and keep your daily schedule strictly organized.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="landing-section" style="background-color: #1a1a1c;">
+        <h2 class="section-title">About Neo</h2>
+        <div style="max-width: 800px; margin: 0 auto; text-align: center; line-height: 1.8; color: #a0a0a0; font-size: 18px;">
+            <p>Neo is an ongoing research and development project focused on bridging the gap between natural language processing and practical, day-to-day developer workflows. It is tailored specifically for BS Information Technology students and professionals who need a reliable, secure environment to manage tasks and troubleshoot code.</p>
+        </div>
+    </section>
+
+    <section id="contact" class="landing-section">
+        <h2 class="section-title">Contact</h2>
+        <div style="text-align: center; color: #a0a0a0;">
+            <p>Have questions about the system architecture or want to report a bug?</p>
+            <p style="margin-top: 20px; font-size: 24px;">
+                <span class="material-symbols-rounded">mail</span> support@neoassistant.local
+            </p>
+        </div>
+    </section>
+
 </body>
 </html>
