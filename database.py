@@ -15,11 +15,7 @@ class Database:
             return False # User exists
         self.users.insert_one({
             "username": username,
-<<<<<<< HEAD
             "email": email,
-=======
-            "email": email, # Now this will work
->>>>>>> 1c1ede45ff24ecbb3c9c5d346622c6bdcd126675
             "password": generate_password_hash(password)
         })
         return True
