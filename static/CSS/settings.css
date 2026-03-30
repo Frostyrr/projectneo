@@ -210,6 +210,24 @@ body {
 
 .save-btn:hover {
     color: rgb(232, 232, 232);
-    background-color: #04481f;
+    background: linear-gradient(90deg,rgba(30, 87, 55, 1) 0%, rgb(4, 167, 91) 100%);
     transition: ease 0.2s;
+}
+
+/* Assuming you have a settings modal or panel */
+.settings-panel {
+    transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.4s ease;
+}
+
+/* Example: If it slides in from the right */
+.settings-panel.hidden {
+    transform: translateX(100%);
+    opacity: 0;
+    pointer-events: none;
+}
+
+.settings-panel.visible {
+    transform: translateX(0);
+    opacity: 1;
+    pointer-events: auto;
 }

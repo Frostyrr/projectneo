@@ -62,11 +62,15 @@ body {
     text-decoration: none;
     font-size: 15px;
     font-weight: 500;
-    transition: color 0.2s;
+    padding: 5px 10px;
+    border: 2px solid transparent;
+    border-radius: 5px;
+    transition: color 0.2s, background-color 0.2s, border-color 0.2s;
 }
 
 .nav-links a:hover {
-    color: #07853e;
+    background-color: rgb(230, 230, 230);
+    color: #1e5737;
 }
 
 .hero-content-wrapper {
@@ -213,7 +217,8 @@ body {
 }
 
 .btn-primary:hover {
-    background-color: #07853e;
+    background: linear-gradient(90deg,rgba(30, 87, 55, 1) 0%, rgb(4, 167, 91) 100%);
+    transition: ease 0.2s;
     color: rgb(232, 232, 232);
 }
 
@@ -248,7 +253,7 @@ body {
 }
 
 .auth-link:hover {
-    color:  rgb(0, 210, 91);
+    color: rgb(0, 210, 91);
 }
 
 .auth-error {
@@ -293,7 +298,7 @@ body {
 
 .feature-card .material-symbols-rounded {
     font-size: 40px;
-    color: #1e5737;
+    color: #157940;
     margin-bottom: 20px;
 }
 
@@ -324,4 +329,85 @@ body {
     .nav-links {
         display: none;
     }
+}
+
+/* --- Animations --- */
+@keyframes fadeSlideUp {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 1. Define the Animations */
+@keyframes slideDown {
+    0% { opacity: 0; transform: translateY(-30px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideRight {
+    0% { opacity: 0; transform: translateX(-50px); }
+    100% { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideLeft {
+    0% { opacity: 0; transform: translateX(50px); }
+    100% { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fadeUp {
+    0% { opacity: 0; transform: translateY(40px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+/* ANIMATIONS */
+.landing-nav {
+    animation: slideDown 0.8s ease forwards;
+}
+
+.hero-text-section {
+    opacity: 0; /* Starts hidden */
+    animation: slideRight 1s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+    animation-delay: 0.2s;
+}
+
+.hero-form-section {
+    opacity: 0;
+    animation: slideLeft 1s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+    animation-delay: 0.4s;
+}
+
+.feature-card {
+    opacity: 0;
+    animation: fadeUp 1.8s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+}
+
+/* Stagger the feature cards so they appear one after the other */
+.features-grid .feature-card:nth-child(1) {
+    animation-delay: 0.6s;
+}
+.features-grid .feature-card:nth-child(2) {
+    animation-delay: 0.8s;
+}
+
+.scroll-hidden {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.8s cubic-bezier(0.25, 0.8, 0.25, 1), 
+                transform 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* The final state (visible and in place) */
+.scroll-show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Stagger the feature cards so they slide up one after the other */
+.features-grid .feature-card:nth-child(2) {
+    transition-delay: 0.2s;
 }

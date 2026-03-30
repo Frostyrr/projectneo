@@ -338,3 +338,24 @@ body {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
 }
+
+@keyframes slideSidebar {
+    0% { opacity: 0; transform: translateX(-40px); }
+    100% { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fadeMainContent {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+.sidebar {
+    opacity: 0;
+    animation: slideSidebar 0.8s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+}
+
+.main-content {
+    opacity: 0;
+    animation: fadeMainContent 0.8s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+    animation-delay: 0.3s;
+}
