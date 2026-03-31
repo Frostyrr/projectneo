@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register - Neo Assistant</title>
+    <title>Register - Neo</title>
     <link rel="icon" type="image/x-icon" href="/static/images/singleNEO.png">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <link rel="stylesheet" href="/static/CSS/auth.css">
 </head>
 <body>
+<<<<<<< HEAD
     <div class="auth-wrapper">
         <div class="auth-card">
             <img src="/static/images/NEO.png" width="100" height="auto">
@@ -21,6 +22,75 @@
             </form>
             <div class="auth-link">
                 Already have an account? <a href="/login">Log in</a>
+=======
+
+    <div id="home" class="landing-hero">
+        <nav class="landing-nav">
+            <a href="/login" class="nav-brand">
+                <img src="/static/images/NEO.png" alt="Neo Logo">
+            </a>
+            <div class="nav-links">
+                <a href="#home">Home</a>
+                <a href="#features">Features</a>
+                <a href="#about">About</a>
+                <a href="#contact">Contact</a>
+            </div>
+        </nav>
+
+        <div class="hero-content-wrapper">
+            <div class="hero-text-section">
+                <h1>Neo.</h1>
+                <h2>Your Personal Assistant</h2>
+                <p>Neo helps you manage your schedules, and organize your daily tasks seamlessly.</p>
+                <a href="#features" class="btn-outline">LEARN MORE</a>
+            </div>
+
+            <div class="hero-form-section">
+                <div class="auth-card">
+                    <h2 class="auth-card-title">Create an account</h2>
+                    
+                    {% if error %}
+                    <div class="auth-error">
+                        <span class="material-symbols-rounded" style="font-size: 18px;">error</span>
+                        {{ error }}
+                    </div>
+                    {% endif %}
+
+                    <form class="auth-form" action="/register" method="POST">
+                        <div class="input-group">
+                            <label for="username">Username</label>
+                            <div class="input-with-icon">
+                                <span class="material-symbols-rounded">person</span>
+                                <input type="text" id="username" name="username" placeholder="Choose a username" required>
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="email">Email Address</label>
+                            <div class="input-with-icon">
+                                <span class="material-symbols-rounded">mail</span>
+                                <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="password">Password</label>
+                            <div class="input-with-icon" style="position: relative;">
+                                <span class="material-symbols-rounded">lock</span>
+                                <input type="password" id="password" name="password" placeholder="Enter password" required>
+                                
+                                <span class="material-symbols-rounded toggle-password" title="Show Password">visibility</span>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-primary" style="margin-top: 20px;">Sign up</button>
+                    </form>
+
+                    <div class="auth-footer">
+                        Already have an account? <a href="/login" class="auth-link">Log in</a>
+                    </div>
+                </div>
+>>>>>>> e0a7b767ebf0c1186527fb3be591c09e6517ae3d
             </div>
         </div>
     </div>
@@ -58,5 +128,6 @@
         </div>
     </section>
 
+   <script src="/static/JS/auth.js"></script>
 </body>
 </html>

@@ -1,0 +1,145 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background-color: #131314;
+    color: #e3e3e3;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.app-container {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+}
+
+/* ---------------- MAIN CONTENT ---------------- */
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    min-width: 0;
+}
+
+.chat-header {
+    padding: 16px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-title {
+    display: flex;
+    align-items: baseline;
+}
+
+.header-title h2 {
+    font-size: 18px;
+    font-weight: 500;
+    color: #e3e3e3;
+}
+
+.header-logo {
+    width: 36px;
+    height: auto;
+    border-radius: 50%;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* --- Message Actions (Copy Button) --- */
+.message-actions {
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 8px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+/* Show the button only when hovering over the message */
+.chat-message.bot:hover .message-actions {
+    opacity: 1;
+}
+
+.copy-btn {
+    background: transparent;
+    border: none;
+    color: #a0a0a0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.copy-btn:hover {
+    background-color: #333538;
+    color: #e3e3e3;
+}
+
+.copy-btn .material-symbols-rounded {
+    font-size: 16px;
+}
+
+/* --- Fine-tuning the Copy Button --- */
+.message-actions {
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 12px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    
+    /* Pulls the button slightly left so the icon aligns perfectly with the text above it */
+    margin-left: -8px; 
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .chat-box, .input-wrapper {
+        padding-left: 5%;
+        padding-right: 5%;
+    }
+    .sidebar {
+        position: absolute;
+        height: 100vh;
+        z-index: 1000;
+        box-shadow: 4px 0 15px rgba(0,0,0,0.5);
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideSidebar {
+    0% { opacity: 0; transform: translateX(-40px); }
+    100% { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fadeMainContent {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+.sidebar {
+    opacity: 0;
+    animation: slideSidebar 0.8s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+}
+
+.main-content {
+    opacity: 0;
+    animation: fadeMainContent 0.8s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+    animation-delay: 0.3s;
+}
