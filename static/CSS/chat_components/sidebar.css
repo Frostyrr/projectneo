@@ -1,0 +1,119 @@
+/* ---------------- SIDEBAR ---------------- */
+.sidebar {
+    width: 280px;
+    background-color: #1e1f20;
+    display: flex;
+    flex-direction: column;
+    transition: width 0.3s ease, padding 0.3s ease;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.sidebar.collapsed {
+    width: 0;
+    padding: 0;
+}
+
+.sidebar-top {
+    padding: 16px 20px;
+}
+
+.sidebar-new-chat {
+    padding: 0 20px 20px 20px;
+}
+
+.new-chat-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background-color: #1a1a1c;
+    color: #c4c7c5;
+    border: none;
+    border-radius: 30px;
+    padding: 10px 16px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s;
+    width: max-content;
+}
+
+.new-chat-btn:hover {
+    background-color: #333538;
+}
+
+.plus-icon {
+    font-size: 20px;
+    line-height: 1;
+}
+
+.sidebar-middle {
+    flex: 1;
+    padding: 0 20px;
+    overflow-y: auto;
+}
+
+.recent-title {
+    font-size: 13px;
+    color: #c4c7c5;
+    margin-bottom: 12px;
+    font-weight: 500;
+}
+
+.recent-list {
+    list-style: none;
+}
+
+.recent-list li a {
+    display: block;
+    padding: 10px;
+    color: #e3e3e3;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.recent-list li a:hover {
+    background-color: #333538;
+}
+
+.sidebar-bottom {
+    padding: 16px 20px;
+}
+
+.sidebar-menu {
+    list-style: none;
+}
+
+.sidebar-menu li a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    color: #e3e3e3;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.sidebar-menu li a:hover {
+    background-color: #333538;
+}
+
+.icon-btn {
+    background: none;
+    border: none;
+    color: #c4c7c5;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+    line-height: 1;
+}
+
+.icon-btn:hover {
+    background-color: #333538;
+}

@@ -54,10 +54,23 @@ function appendMessage(message, sender) {
     const msgDiv = document.createElement("div");
     msgDiv.classList.add("chat-message", sender);
     
+    // --- NEW: Add Neo's Avatar for Bot Messages ---
+    if (sender === "bot") {
+        const avatarImg = document.createElement("img");
+        avatarImg.src = "/static/images/singleNEO.png";
+        avatarImg.alt = "Neo";
+        avatarImg.classList.add("bot-avatar");
+        msgDiv.appendChild(avatarImg);
+    }
+    
     // Wrapper for the content and actions
     const innerWrapper = document.createElement("div");
     innerWrapper.style.display = "flex";
     innerWrapper.style.flexDirection = "column";
+    
+    // Give the text room to breathe, accounting for the new avatar's width
+    innerWrapper.style.maxWidth = sender === "bot" ? "calc(100% - 46px)" : "70%";
+    
     if (sender === "user") {
          innerWrapper.style.alignItems = "flex-end";
     }
@@ -80,12 +93,10 @@ function appendMessage(message, sender) {
         
         // Add click event to copy text
         copyBtn.addEventListener("click", () => {
-            // Copy the raw text (not HTML)
             navigator.clipboard.writeText(message).then(() => {
                 copyBtn.innerHTML = '<span class="material-symbols-rounded">check</span> Copied!';
-                copyBtn.style.color = "#81c995"; // Success color
+                copyBtn.style.color = "#81c995"; 
                 
-                // Reset button after 2 seconds
                 setTimeout(() => {
                     copyBtn.innerHTML = '<span class="material-symbols-rounded">content_copy</span> Copy';
                     copyBtn.style.color = "#a0a0a0";
@@ -106,5 +117,6 @@ function appendMessage(message, sender) {
     msgDiv.appendChild(innerWrapper);
     chatBox.appendChild(msgDiv);
     
+    // Smooth scroll to bottom
     chatBox.scrollTop = chatBox.scrollHeight;
 }
