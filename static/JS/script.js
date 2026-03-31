@@ -54,19 +54,57 @@ function appendMessage(message, sender) {
     const msgDiv = document.createElement("div");
     msgDiv.classList.add("chat-message", sender);
     
+    // Wrapper for the content and actions
+    const innerWrapper = document.createElement("div");
+    innerWrapper.style.display = "flex";
+    innerWrapper.style.flexDirection = "column";
+    if (sender === "user") {
+         innerWrapper.style.alignItems = "flex-end";
+    }
+
     // Inner wrapper for the actual bubble and text
     const contentDiv = document.createElement("div");
     contentDiv.classList.add("msg-content");
     
     if (sender === "bot") {
         contentDiv.innerHTML = marked.parse(message);
+        innerWrapper.appendChild(contentDiv);
+
+        // --- Create Copy Button ---
+        const actionsDiv = document.createElement("div");
+        actionsDiv.classList.add("message-actions");
+
+        const copyBtn = document.createElement("button");
+        copyBtn.classList.add("copy-btn");
+        copyBtn.innerHTML = '<span class="material-symbols-rounded">content_copy</span> Copy';
+        
+        // Add click event to copy text
+        copyBtn.addEventListener("click", () => {
+            // Copy the raw text (not HTML)
+            navigator.clipboard.writeText(message).then(() => {
+                copyBtn.innerHTML = '<span class="material-symbols-rounded">check</span> Copied!';
+                copyBtn.style.color = "#81c995"; // Success color
+                
+                // Reset button after 2 seconds
+                setTimeout(() => {
+                    copyBtn.innerHTML = '<span class="material-symbols-rounded">content_copy</span> Copy';
+                    copyBtn.style.color = "#a0a0a0";
+                }, 2000);
+            }).catch(err => {
+                console.error("Failed to copy text: ", err);
+            });
+        });
+
+        actionsDiv.appendChild(copyBtn);
+        innerWrapper.appendChild(actionsDiv);
+
     } else {
         contentDiv.textContent = message;
+        innerWrapper.appendChild(contentDiv);
     }
     
-    msgDiv.appendChild(contentDiv);
+    msgDiv.appendChild(innerWrapper);
     chatBox.appendChild(msgDiv);
     
-    // Smooth scroll to bottom
     chatBox.scrollTop = chatBox.scrollHeight;
 }

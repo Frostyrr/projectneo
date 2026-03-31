@@ -320,6 +320,67 @@ body {
     border-radius: 4px;
 }
 
+.chat-message.bot .msg-content p {
+    margin-bottom: 12px;
+}
+
+.chat-message.bot .msg-content p:last-child {
+    margin-bottom: 0;
+}
+
+.chat-message.bot .msg-content ul, 
+.chat-message.bot .msg-content ol {
+    margin-top: 8px;
+    margin-bottom: 16px;
+    padding-left: 24px;
+}
+
+.chat-message.bot .msg-content li {
+    margin-bottom: 8px;
+    line-height: 1.6;
+}
+
+.chat-message.bot .msg-content strong {
+    color: #ffffff; /* Make bold text pop a bit more */
+}
+
+/* --- Message Actions (Copy Button) --- */
+.message-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 8px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+/* Show the button only when hovering over the message */
+.chat-message.bot:hover .message-actions {
+    opacity: 1;
+}
+
+.copy-btn {
+    background: transparent;
+    border: none;
+    color: #a0a0a0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.copy-btn:hover {
+    background-color: #333538;
+    color: #e3e3e3;
+}
+
+.copy-btn .material-symbols-rounded {
+    font-size: 16px;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .chat-box, .input-wrapper {
