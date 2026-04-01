@@ -208,8 +208,8 @@ def resend_otp(email, purpose):
     else:
         return redirect(url_for("verify_otp", email=email))
 
-@app.route("/profile", methods=["GET", "POST"])
-def profile():
+@app.route("/settings", methods=["GET", "POST"])
+def settings():
     if "user" not in session:
         return redirect(url_for("login"))
     
@@ -231,7 +231,17 @@ def profile():
         
         current_email = new_email
         
-    return render_template("profile.html", username=username, email=current_email, message=message)
+    return render_template("settings.html", username=username, email=current_email, message=message)
+
+@app.route("/delete-account", methods=["POST"])
+def delete_account():
+    if "user" not in session:
+        return redirect(url_for("login"))
+    
+    username = session["user"]
+    db.delete_user(username)
+    session.pop("user", None) # Clear the session
+    return redirect(url_for("login"))
 
 @app.route("/logout")
 def logout():

@@ -44,6 +44,15 @@ class Database:
                 self.users.update_one({"username": username}, {"$set": update_fields})
                 return True
             return False
+    
+    def delete_user(self, username):
+        # Delete the user's account
+        self.users.delete_one({"username": username})
+        # Delete associated chat history
+        self.chat_history.delete_one({"username": username})
+        # Delete associated reminders
+        self.reminders.delete_many({"username": username})
+        return True
 
     def save_chat(self, username, messages):
         self.chat_history.update_one(
