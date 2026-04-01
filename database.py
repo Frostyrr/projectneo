@@ -75,7 +75,7 @@ class Database:
         })
 
     def save_otp(self, email, otp, expire_minutes=10):
-        expire_at = datetime.utcnow() + timedelta(minutes=expire_minutes)
+        expire_at = datetime.now() + timedelta(minutes=expire_minutes)
         self.otps.update_one(
             {"email": email},
             {"$set": {"otp": otp, "expire_at": expire_at}},
