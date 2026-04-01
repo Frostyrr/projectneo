@@ -41,13 +41,13 @@
                 </p>
 
                 <form class="auth-form" action="{% if purpose == 'register' %}/verify-register-otp/{{ email }}{% else %}/verify-otp/{{ email }}{% endif %}" method="POST">
-                    <div class="input-group">
-                        <label for="otp">OTP Code</label>
-                        {% if error %}
+                    {% if error %}
                             <div class="auth-error">{{ error }}
                                 <span class="material-symbols-rounded">error</span>
                             </div>
-                        {% endif %}
+                    {% endif %}
+                    <div class="input-group">
+                        <label for="otp">OTP Code</label>
                         <div class="input-with-icon">
                             <span class="material-symbols-rounded">lock</span>
                             <input type="text" id="otp" name="otp" placeholder="Enter OTP" required pattern="\d{6}" title="Enter 6-digit OTP">
