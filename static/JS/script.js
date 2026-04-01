@@ -54,42 +54,69 @@ function appendMessage(message, sender) {
     const msgDiv = document.createElement("div");
     msgDiv.classList.add("chat-message", sender);
     
+    // --- NEW: Add Neo's Avatar for Bot Messages ---
+    if (sender === "bot") {
+        const avatarImg = document.createElement("img");
+        avatarImg.src = "/static/images/singleNEO.png";
+        avatarImg.alt = "Neo";
+        avatarImg.classList.add("bot-avatar");
+        msgDiv.appendChild(avatarImg);
+    }
+    
+    // Wrapper for the content and actions
+    const innerWrapper = document.createElement("div");
+    innerWrapper.style.display = "flex";
+    innerWrapper.style.flexDirection = "column";
+    
+    // Give the text room to breathe, accounting for the new avatar's width
+    innerWrapper.style.maxWidth = sender === "bot" ? "calc(100% - 46px)" : "70%";
+    
+    if (sender === "user") {
+         innerWrapper.style.alignItems = "flex-end";
+    }
+
     // Inner wrapper for the actual bubble and text
     const contentDiv = document.createElement("div");
     contentDiv.classList.add("msg-content");
     
     if (sender === "bot") {
         contentDiv.innerHTML = marked.parse(message);
+        innerWrapper.appendChild(contentDiv);
+
+        // --- Create Copy Button ---
+        const actionsDiv = document.createElement("div");
+        actionsDiv.classList.add("message-actions");
+
+        const copyBtn = document.createElement("button");
+        copyBtn.classList.add("copy-btn");
+        copyBtn.innerHTML = '<span class="material-symbols-rounded">content_copy</span> Copy';
+        
+        // Add click event to copy text
+        copyBtn.addEventListener("click", () => {
+            navigator.clipboard.writeText(message).then(() => {
+                copyBtn.innerHTML = '<span class="material-symbols-rounded">check</span> Copied!';
+                copyBtn.style.color = "#81c995"; 
+                
+                setTimeout(() => {
+                    copyBtn.innerHTML = '<span class="material-symbols-rounded">content_copy</span> Copy';
+                    copyBtn.style.color = "#a0a0a0";
+                }, 2000);
+            }).catch(err => {
+                console.error("Failed to copy text: ", err);
+            });
+        });
+
+        actionsDiv.appendChild(copyBtn);
+        innerWrapper.appendChild(actionsDiv);
+
     } else {
         contentDiv.textContent = message;
+        innerWrapper.appendChild(contentDiv);
     }
     
-    msgDiv.appendChild(contentDiv);
+    msgDiv.appendChild(innerWrapper);
     chatBox.appendChild(msgDiv);
     
     // Smooth scroll to bottom
     chatBox.scrollTop = chatBox.scrollHeight;
 }
-
-document.addEventListener("DOMContentLoaded", function() {
-    
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-
-            if (entry.isIntersecting) {
-                entry.target.classList.add('scroll-show');
-
-                observer.unobserve(entry.target); 
-            }
-        });
-    }, {
-        threshold: 0.15
-    });
-
-    const elementsToAnimate = document.querySelectorAll('.section-title, .feature-card, #about div, #contact div');
-
-    elementsToAnimate.forEach((el) => {
-        el.classList.add('scroll-hidden');
-        observer.observe(el);
-    });
-});

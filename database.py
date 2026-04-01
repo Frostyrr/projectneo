@@ -1,6 +1,7 @@
 from pymongo import MongoClient
 from werkzeug.security import generate_password_hash, check_password_hash
 import certifi
+from datetime import datetime, timedelta
 
 class Database:
     def __init__(self, uri):
@@ -9,6 +10,7 @@ class Database:
         self.users = self.db.users
         self.chat_history = self.db.chat_history
         self.reminders = self.db.reminders
+        self.otps = self.db.otps
 
     def create_user(self, username, email, password):
         if self.users.find_one({"username": username}):
@@ -42,6 +44,15 @@ class Database:
                 self.users.update_one({"username": username}, {"$set": update_fields})
                 return True
             return False
+    
+    def delete_user(self, username):
+        # Delete the user's account
+        self.users.delete_one({"username": username})
+        # Delete associated chat history
+        self.chat_history.delete_one({"username": username})
+        # Delete associated reminders
+        self.reminders.delete_many({"username": username})
+        return True
 
     def save_chat(self, username, messages):
         self.chat_history.update_one(
@@ -62,3 +73,18 @@ class Database:
             "task": task,
             "time": time_str
         })
+
+    def save_otp(self, email, otp, expire_minutes=10):
+        expire_at = datetime.now() + timedelta(minutes=expire_minutes)
+        self.otps.update_one(
+            {"email": email},
+            {"$set": {"otp": otp, "expire_at": expire_at}},
+            upsert=True
+        )
+
+    def verify_otp(self, email, otp):
+        record = self.otps.find_one({"email": email, "otp": otp})
+        if record and record["expire_at"] > datetime.utcnow():
+            self.otps.delete_one({"email": email})  # remove used OTP
+            return True
+        return False

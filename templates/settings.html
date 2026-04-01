@@ -69,8 +69,48 @@
                     </div>
                 </form>
 
+                <div class="form-section divider danger-zone">
+                    <h4>Danger Zone</h4>
+                    <p class="section-desc">Once you delete your account, there is no going back. Please be certain.</p>
+                    <button type="button" class="btn-danger" id="deleteAccountBtn">Delete Account</button>
+                </div>
+
             </div>
         </main>
     </div>
+
+    <div id="deleteModal" class="modal-overlay hidden">
+        <div class="modal-card">
+            <div class="modal-header">
+                <span class="material-symbols-rounded warning-icon">warning</span>
+                <h3>Delete Account</h3>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete your account? This action <strong>cannot be undone</strong> and all your data, chats, and reminders will be permanently lost.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="cancel-modal-btn" id="cancelDeleteBtn">Cancel</button>
+                <form action="/delete-account" method="POST" style="margin: 0;">
+                    <button type="submit" class="confirm-delete-btn">Yes, Delete My Account</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const deleteBtn = document.getElementById('deleteAccountBtn');
+        const cancelBtn = document.getElementById('cancelDeleteBtn');
+        const modal = document.getElementById('deleteModal');
+
+        deleteBtn.addEventListener('click', () => {
+            modal.classList.remove('hidden');
+            setTimeout(() => modal.classList.add('visible'), 10);
+        });
+
+        cancelBtn.addEventListener('click', () => {
+            modal.classList.remove('visible');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        });
+    </script>
 </body>
 </html>

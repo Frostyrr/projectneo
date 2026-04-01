@@ -66,9 +66,13 @@ body {
     border: 2px solid transparent;
     border-radius: 5px;
     transition: color 0.2s, background-color 0.2s, border-color 0.2s;
+    transition: transform 0.2s;
+    transform-origin: center;
 }
 
 .nav-links a:hover {
+    cursor: pointer;
+    transform: translateY(-2px);
     background-color: rgb(230, 230, 230);
     color: #1e5737;
 }
@@ -122,9 +126,12 @@ body {
     font-weight: 600;
     font-size: 14px;
     transition: all 0.2s;
+    transform-origin: center;
 }
 
 .btn-outline:hover {
+    cursor: pointer;
+    transform: translateY(-2px);
     background: white;
     color: #131314;
 }
@@ -230,12 +237,15 @@ body {
     text-decoration: none;
     margin-top: -8px;
     margin-bottom: 24px;
-    transition: color 0.2s;
+    transition: color 0.2s, transform 0.2s;
+    transform-origin: center;
 }
 
 .forgot-password:hover {
+    cursor: pointer;
     color: rgb(0, 210, 91);
     text-decoration: underline;
+    transform: translateY(-2px);
 }
 
 .auth-footer {
@@ -246,29 +256,48 @@ body {
 }
 
 .auth-link {
-    color:#07853e;
+    display: inline-block;
+    color: #07853e;
     text-decoration: none;
     font-weight: 500;
-    transition: color 0.2s;
+    transition: color 0.2s, transform 0.2s;
 }
 
 .auth-link:hover {
+    cursor: pointer;
     color: rgb(0, 210, 91);
+    transform: translateY(-2px);
+    text-decoration: underline;
 }
 
 .auth-error {
     background-color: rgba(217, 48, 37, 0.1);
     color: #f28b82;
-    padding: 12px 16px;
+    padding: 10px 14px;
     border-radius: 8px;
-    margin-bottom: 24px;
-    font-size: 14px;
+    margin-bottom: 12px;
+    font-size: 13px;
     border: 1px solid rgba(217, 48, 37, 0.2);
     display: flex;
     align-items: center;
     gap: 8px;
+    animation: fadeIn 0.3s ease;
 }
 
+.auth-error .material-symbols-rounded {
+    font-size: 18px;
+    color: #f28b82;
+}
+
+#otp {
+    letter-spacing: 4px;
+    font-weight: 600;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
 /* ---------------- EXTRA SECTIONS ---------------- */
 .landing-section {
     padding: 100px 5%;
@@ -296,6 +325,29 @@ body {
     border: 1px solid #333538;
 }
 
+.feature-card::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0%;
+    height: 3px;
+    background-color: rgb(0, 124, 54);
+    border-radius: 2px; 
+    transition: width 1s ease; 
+    
+}
+
+.feature-card:hover {
+    background: #202121;
+    transform: translateY(-2px);
+    transition: transform 0.2s ease;
+}
+
+.feature-card:hover::after {
+    width: 100%; 
+}
+
 .feature-card .material-symbols-rounded {
     font-size: 40px;
     color: #157940;
@@ -311,6 +363,29 @@ body {
 .feature-card p {
     color: #a0a0a0;
     line-height: 1.6;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 15px; 
+    left: auto !important;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #a0a0a0;
+    font-size: 20px !important;
+    user-select: none;
+    transition: color 0.3s ease;
+    z-index: 10;
+}
+
+.toggle-password:hover {
+    color: #ffffff;
+}
+
+.input-with-icon input[type="password"],
+.input-with-icon input[type="text"] {
+    padding-right: 40px; 
 }
 
 /* Responsive */
