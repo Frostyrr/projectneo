@@ -33,10 +33,11 @@ def schedule_reminder(username, task, time_str):
     except Exception as e:
         print("Reminder error:", e)
         return False
-    
+
+# -------------------- EMAIL OTP --------------------
 def send_email(to_email, otp, purpose="reset"):
-    from_mail = "eliruzelalmonia22@gmail.com"
-    app_password = "qpgtlwkpuxkclotw"
+    from_mail = "project.neoassistant@gmail.com"
+    app_password = "knlzzcfceekzlyrh"
 
     msg = EmailMessage()
     msg["From"] = from_mail
