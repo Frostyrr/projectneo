@@ -170,18 +170,45 @@ def forgot_password():
 
 @app.route("/verify-otp/<email>", methods=["GET", "POST"])
 def verify_otp(email):
+    purpose = request.args.get("purpose", "reset")
+
+    back_url = url_for("forgot_password") if purpose == "reset" else url_for("register")
+
     if request.method == "POST":
         otp = request.form.get("otp").strip()
         if db.verify_otp(email, otp):
-            return redirect(url_for("reset_password", email=email))
+            if purpose == "register":
+                data = session.get("register_data")
+                if not data:
+                    return redirect(url_for("register"))
+                db.create_user(data["username"], data["email"], data["password"])
+                session.pop("register_data", None)
+                return redirect(url_for("login"))
+            else: 
+                session["otp_verified_for_reset"] = email
+                return redirect(url_for("reset_password", email=email))
         else:
-            return render_template("verify-otp.html", email=email, error="Invalid or expired OTP", purpose="reset")
-
-    return render_template("verify-otp.html", email=email, purpose="reset")
+            return render_template(
+                "verify-otp.html",
+                email=email,
+                error="Invalid or expired OTP",
+                purpose=purpose,
+                back_url=back_url
+            )
+        
+    return render_template(
+        "verify-otp.html",
+        email=email,
+        purpose=purpose,
+        back_url=back_url
+    )
 
 
 @app.route("/reset-password/<email>", methods=["GET", "POST"])
 def reset_password(email):
+    if session.get("otp_verified_for_reset") != email:
+        return redirect(url_for("forgot_password"))
+
     if request.method == "POST":
         new_password = request.form.get("password").strip()
         confirm_password = request.form.get("confirmPassword").strip()
@@ -193,6 +220,9 @@ def reset_password(email):
             {"email": email},
             {"$set": {"password": generate_password_hash(new_password)}}
         )
+
+        session.pop("otp_verified_for_reset", None)
+
         return redirect(url_for("login"))
 
     return render_template("reset-password.html", email=email)
@@ -241,7 +271,7 @@ def delete_account():
     
     username = session["user"]
     db.delete_user(username)
-    session.pop("user", None) # Clear the session
+    session.pop("user", None) 
     return redirect(url_for("login"))
 
 @app.route("/logout")
