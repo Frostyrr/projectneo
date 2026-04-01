@@ -177,7 +177,7 @@ def verify_otp(email):
         else:
             return render_template("verify-otp.html", email=email, error="Invalid or expired OTP", purpose="reset")
 
-    return render_template("verify-otp.html", email=email, error="Invalid or expired OTP", purpose="reset")
+    return render_template("verify-otp.html", email=email, purpose="reset")
 
 
 @app.route("/reset-password/<email>", methods=["GET", "POST"])
