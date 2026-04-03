@@ -11,6 +11,8 @@ import random
 import smtplib
 from email.message import EmailMessage
 
+import requests
+
 app = Flask(__name__)
 app.config.from_object(Config)
 
