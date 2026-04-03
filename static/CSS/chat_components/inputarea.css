@@ -110,3 +110,19 @@
 .chat-message.bot .msg-content strong {
     color: #ffffff; /* Make bold text pop a bit more */
 }
+
+/* --- Mobile Overrides for Input Bar --- */
+@media (max-width: 768px) {
+    /* 1. Remove the 15% margins so the input bar fills the screen */
+    .input-wrapper {
+        padding: 10px 15px 20px 15px !important;
+        background-color: #131314; /* Prevents text clipping behind the transparent bar */
+    }
+
+    /* 2. Slight visual tweaks for a tighter mobile feel */
+    .input-container {
+        margin-top: 0;
+        padding: 10px 16px;
+        border-radius: 24px;
+    }
+}

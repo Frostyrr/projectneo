@@ -88,3 +88,16 @@
     flex-shrink: 0;
     object-fit: contain;
 }
+
+/* --- Mobile Overrides for Chat Area --- */
+@media (max-width: 768px) {
+    /* 1. Remove the massive 15% desktop margins */
+    .chat-box {
+        padding: 20px 15px !important; 
+    }
+
+    /* 2. Allow user message bubbles to stretch wider on small screens */
+    .chat-message.user .msg-content {
+        max-width: 90%; 
+    }
+}
