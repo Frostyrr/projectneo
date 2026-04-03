@@ -11,6 +11,8 @@ import random
 import smtplib
 from email.message import EmailMessage
 
+import requests
+
 app = Flask(__name__)
 app.config.from_object(Config)
 
@@ -307,6 +309,42 @@ def api_chat():
 
     reply = bot.get_response(username, user_input, db)
     return jsonify({"reply": reply})
+
+@app.route("/api/transcribe", methods=["POST"])
+def api_transcribe():
+    if "user" not in session:
+        return jsonify({"error": "Unauthorized"}), 401
+
+    if "audio" not in request.files:
+        return jsonify({"error": "No audio file provided"}), 400
+
+    audio_file = request.files["audio"]
+    
+    # We use Groq's ultra-fast Whisper model for transcription
+    headers = {
+        "Authorization": f"Bearer {app.config['GROQ_API_KEY']}"
+    }
+    
+    # Groq requires the file, the filename, and the content type
+    files = {
+        "file": (audio_file.filename, audio_file.read(), audio_file.content_type)
+    }
+    data = {
+        "model": "whisper-large-v3-turbo" # Groq's fastest speech-to-text model
+    }
+    
+    try:
+        # Note: This is a different URL than your chat completion URL
+        transcription_url = "https://api.groq.com/openai/v1/audio/transcriptions"
+        response = requests.post(transcription_url, headers=headers, files=files, data=data)
+        response.raise_for_status()
+        
+        result = response.json()
+        return jsonify({"text": result.get("text", "")})
+        
+    except Exception as e:
+        print("Transcription Error:", e)
+        return jsonify({"error": "Failed to transcribe audio"}), 500
 
 if __name__ == "__main__":
     app.run(debug=True)
