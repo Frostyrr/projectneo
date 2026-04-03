@@ -111,6 +111,40 @@
     color: #ffffff; /* Make bold text pop a bit more */
 }
 
+/* --- Microphone Button Styles --- */
+.mic-icon-btn {
+    background: transparent;
+    color: #a0a0a0;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.2s ease;
+}
+
+.mic-icon-btn:hover {
+    background-color: #333538;
+    color: #e3e3e3;
+}
+
+/* Active recording state */
+.mic-icon-btn.recording {
+    color: #ff4d4f;
+    background-color: rgba(255, 77, 79, 0.15);
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 77, 79, 0.4); }
+    70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(255, 77, 79, 0); }
+    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 77, 79, 0); }
+}
+
 /* --- Mobile Overrides for Input Bar --- */
 @media (max-width: 768px) {
     /* 1. Remove the 15% margins so the input bar fills the screen */
