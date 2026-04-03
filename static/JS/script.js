@@ -8,6 +8,12 @@ const sidebar = document.getElementById("sidebar");
 const menuBtn = document.getElementById("menu-btn");
 const openMenuBtn = document.getElementById("open-menu-btn");
 
+// for mobile view
+if (window.innerWidth <= 768) {
+    sidebar.classList.add("collapsed");
+    openMenuBtn.classList.remove("hidden");
+}
+
 // Toggle Sidebar Logic
 menuBtn.addEventListener("click", () => {
     sidebar.classList.add("collapsed");
