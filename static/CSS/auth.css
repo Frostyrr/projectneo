@@ -406,6 +406,34 @@ body {
     }
 }
 
+/* --- Mobile Phone Adjustments --- */
+@media (max-width: 600px) {
+    /* Scale down the massive hero text */
+    .hero-text-section h1 {
+        font-size: 42px; 
+    }
+    
+    .hero-text-section h2 {
+        font-size: 20px;
+    }
+    
+    /* Reduce padding so input fields have more room to breathe */
+    .auth-card {
+        padding: 30px 20px; 
+        border-radius: 12px;
+    }
+    
+    /* Reduce the massive gap between the hero text and the form */
+    .hero-content-wrapper {
+        gap: 20px;
+    }
+    
+    /* Make the extra sections less padded on small screens */
+    .landing-section {
+        padding: 60px 5%;
+    }
+}
+
 /* --- Animations --- */
 @keyframes fadeSlideUp {
     0% {
