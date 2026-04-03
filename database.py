@@ -11,6 +11,7 @@ class Database:
         self.chat_history = self.db.chat_history
         self.reminders = self.db.reminders
         self.otps = self.db.otps
+        self.tasks = self.db.tasks 
 
     def create_user(self, username, email, password):
         if self.users.find_one({"username": username}):
@@ -75,7 +76,7 @@ class Database:
         })
 
     def save_otp(self, email, otp, expire_minutes=10):
-        expire_at = datetime.now() + timedelta(minutes=expire_minutes)
+        expire_at = datetime.utcnow() + timedelta(minutes=expire_minutes)
         self.otps.update_one(
             {"email": email},
             {"$set": {"otp": otp, "expire_at": expire_at}},
@@ -88,3 +89,37 @@ class Database:
             self.otps.delete_one({"email": email})  # remove used OTP
             return True
         return False
+    
+    def save_task(self, username, text, time, date):
+        try:
+            self.tasks.insert_one({
+                "username": username,
+                "text": text,
+                "time": time,
+                "date": date,
+                "created_at": datetime.utcnow()
+            })
+            print(f"Task saved: {text} at {date} {time}")
+        except Exception as e:
+            print("DB insert error:", e)
+        
+    def get_tasks(self, username):
+        tasks = list(self.tasks.find({"username": username}, {"_id": 0}))
+        return tasks
+    
+    def delete_task(self, username, text, time, date):
+        self.tasks.delete_one({
+            "username": username,
+            "text": text,
+            "time": time,
+            "date": date
+    })
+        
+    def delete_multiple_tasks(self, username, tasks):
+        for task in tasks:
+            self.tasks.delete_one({
+                "username": username,
+                "text": task["text"],
+                "time": task["time"],
+                "date": task["date"]
+            })

@@ -38,23 +38,37 @@ function sendMessage() {
     const message = userInput.value.trim();
     if (!message) return;
 
-    // Hide welcome screen on first message
-    if (welcomeScreen) {
-        welcomeScreen.style.display = "none";
-    }
+    if (welcomeScreen) welcomeScreen.style.display = "none";
 
-    // Display user message
     appendMessage(message, "user");
     userInput.value = "";
 
-    // Send message to backend
+    const isTask = message.toLowerCase().includes("task") ||
+                   message.toLowerCase().includes("assignment") ||
+                   message.toLowerCase().includes("remind") ||
+                   message.toLowerCase().includes("schedule");
+
+
+    // 2️⃣ Always send to AI chat
     fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message })
     })
     .then(response => response.json())
-    .then(data => appendMessage(data.reply, "bot"))
+    .then(data => {
+        appendMessage(data.reply, "bot");
+    
+        if (data.new_task) {
+            // Add to local tasks and render
+            tasks.push({
+                text: data.new_task.task,
+                time: data.new_task.time,
+                date: data.new_task.date
+            });
+            renderTasks();
+        }
+    })
     .catch(err => appendMessage("Error connecting to server.", "bot"));
 }
 
