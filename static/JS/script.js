@@ -9,8 +9,7 @@ const menuBtn = document.getElementById("menu-btn");
 const openMenuBtn = document.getElementById("open-menu-btn");
 
 // for mobile view
-if (window.innerWidth <= 768) {
-    sidebar.classList.add("collapsed");
+if (window.innerWidth <= 768) {    sidebar.classList.add("collapsed");
     openMenuBtn.classList.remove("hidden");
 } else {
     sidebar.classList.remove("collapsed");
