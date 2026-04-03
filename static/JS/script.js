@@ -12,6 +12,9 @@ const openMenuBtn = document.getElementById("open-menu-btn");
 if (window.innerWidth <= 768) {
     sidebar.classList.add("collapsed");
     openMenuBtn.classList.remove("hidden");
+} else {
+    sidebar.classList.remove("collapsed");
+    openMenuBtn.classList.add("hidden");
 }
 
 // Toggle Sidebar Logic

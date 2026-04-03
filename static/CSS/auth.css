@@ -392,18 +392,33 @@ body {
 @media (max-width: 900px) {
     .hero-content-wrapper {
         display: flex;
-        flex-direction: column-reverse;
+        flex-direction: column-reverse; /* Forces the login card to the top */
+        margin-top: 10px;
+        gap: 30px;
     }
+    
+    .hero-form-section {
+        width: 100%;
+        animation: none; /* Removes slide animation on mobile for a faster feel */
+    }
+
+    .auth-card {
+        padding: 24px 20px; /* Slimmer padding for mobile */
+    }
+
     .hero-text-section {
-        margin-top: 40px; 
         text-align: center;
+        animation: none;
     }
-    .hero-text-section p {
-        margin: 0 auto 40px auto;
+
+    /* Shrink the Neo title for mobile */
+    .hero-text-section h1 {
+        font-size: 42px;
     }
-    .input-group {
-        text-align: left;
-    }
+    
+    /* Hide the paragraph, "Learn More" button, and nav links to make it a pure login screen */
+    .hero-text-section p, 
+    .btn-outline,
     .nav-links {
         display: none;
     }
