@@ -8,9 +8,6 @@ from database import Database
 from ai_bot import NeoAssistant
 
 import random
-import smtplib
-from email.message import EmailMessage
-
 import requests
 
 app = Flask(__name__)
@@ -38,47 +35,55 @@ def schedule_reminder(username, task, time_str):
 
 # -------------------- EMAIL OTP --------------------
 def send_email(to_email, otp, purpose="reset"):
-    from_mail = app.config["MAIL_EMAIL"]
-    app_password = app.config["MAIL_APP_PASSWORD"]
-
-    msg = EmailMessage()
-    msg["From"] = from_mail
-    msg["To"] = to_email
+    
+    # Paste your copied Google Script URL here
+    GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyFrZiYUWyc6XEkFEkjCrq27q139K4orMEibpMvxdLe6iBXYsxI72Giob-dHW8nZZVw/exec"
 
     if purpose == "register":
-        msg["Subject"] = "Neo Account Verification OTP"
-        msg.set_content(f"""Welcome to Neo!
-
-Your OTP for account registration is:
-
-{otp}
-
-This code will expire in 10 minutes.
-
-- Neo Team
-""")
+        subject = "Neo Account Verification OTP"
+        html_content = f"""
+        <div style="font-family: sans-serif; color: #333;">
+            <h2>Welcome to Neo!</h2>
+            <p>Your OTP for account registration is: <strong style="font-size: 24px; color: #0d763a;">{otp}</strong></p>
+            <p>This code will expire in 10 minutes.</p>
+            <p>- Neo Team</p>
+        </div>
+        """
     else:
-        msg["Subject"] = "Neo Password Reset OTP"
-        msg.set_content(f"""We received a request to reset your password.
+        subject = "Neo Password Reset OTP"
+        html_content = f"""
+        <div style="font-family: sans-serif; color: #333;">
+            <h2>Reset Your Password</h2>
+            <p>We received a request to reset your password.</p>
+            <p>Your One-Time Password (OTP) is: <strong style="font-size: 24px; color: #0d763a;">{otp}</strong></p>
+            <p>This code will expire in 10 minutes. If you did not request this, please ignore this email.</p>
+            <p>- Neo Team</p>
+        </div>
+        """
 
-Your One-Time Password (OTP) is:
-
-{otp}
-
-This code will expire in 10 minutes.
-
-If you did not request this, please ignore this email.
-
-- Neo Team
-""")
+    # Package the data to send to Google
+    payload = {
+        "secret_token": "NeoPassword123!", # NEW: Proves it's you
+        "to": to_email,
+        "subject": subject,
+        "html": html_content
+    }
 
     try:
-        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
-            smtp.login(from_mail, app_password)
-            smtp.send_message(msg)
-            print(f"OTP sent to {to_email}: {otp}")
+        # Send a standard web request (HTTPS)
+        response = requests.post(GOOGLE_SCRIPT_URL, json=payload)
+        
+        # NEW: Actually read the JSON data Google sends back
+        result = response.json()
+        
+        if response.status_code == 200 and result.get("status") == "success":
+            print(f"OTP sent to {to_email} via Google Apps Script: {otp}")
+        else:
+            # If Google failed, print the exact error message to the console
+            print(f"Failed to send. Google responded with: {result}")
+            
     except Exception as e:
-        print("SMTP Error:", e)
+        print("Google Apps Script Error:", e)
 
 # -------------------- ROUTES --------------------
 @app.route("/")
