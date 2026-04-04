@@ -11,3 +11,6 @@ class Config:
     GROQ_API_KEY = os.getenv("GROQ_API_KEY")
     
     MONGO_URI = os.getenv("MONGO_URI")
+
+    MAIL_APP_PASSWORD = os.getenv("MAIL_APP_PASSWORD")
+    MAIL_EMAIL = os.getenv("MAIL_EMAIL")

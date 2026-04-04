@@ -38,8 +38,8 @@ def schedule_reminder(username, task, time_str):
 
 # -------------------- EMAIL OTP --------------------
 def send_email(to_email, otp, purpose="reset"):
-    from_mail = "project.neoassistant@gmail.com"
-    app_password = "knlzzcfceekzlyrh"
+    from_mail = app.config["MAIL_EMAIL"]
+    app_password = app.config["MAIL_APP_PASSWORD"]
 
     msg = EmailMessage()
     msg["From"] = from_mail
