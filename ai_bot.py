@@ -144,3 +144,38 @@ class NeoAssistant:
         except Exception as e:
             print("AI PARSE ERROR:", e)
             return {"task": "", "time": "Not set", "date": "Not set"}
+    
+    def analyze_image(self, base64_image, mime_type, user_prompt):
+        headers = {
+            "Authorization": f"Bearer {self.api_key}",
+            "Content-Type": "application/json"
+        }
+        
+        payload = {
+            "model": "meta-llama/llama-4-scout-17b-16e-instruct",
+            "messages": [
+                {
+                    "role": "user",
+                    "content": [
+                        {"type": "text", "text": user_prompt},
+                        {
+                            "type": "image_url",
+                            "image_url": {
+                                "url": f"data:{mime_type};base64,{base64_image}"
+                            }
+                        }
+                    ]
+                }
+            ],
+            "max_tokens": 1024,
+            "temperature": 0.2
+        }
+        
+        try:
+            # Note: Hardcoded specific endpoint for vision model as per your original code
+            response = requests.post("https://api.groq.com/openai/v1/chat/completions", headers=headers, json=payload)
+            response.raise_for_status()
+            return response.json()["choices"][0]["message"]["content"]
+        except Exception as e:
+            print("Vision API Error:", e)
+            raise e
