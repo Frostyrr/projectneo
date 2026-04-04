@@ -526,6 +526,14 @@ def delete_chat(chat_id):
         return jsonify({"error": "Unauthorized"}), 401
     db.delete_chat(chat_id)
     return jsonify({"success": True})
+
+@app.route("/api/chat/<chat_id>/pin", methods=["PUT"])
+def toggle_pin_chat(chat_id):
+    if "user" not in session:
+        return jsonify({"error": "Unauthorized"}), 401
+    is_pinned = request.json.get("is_pinned", False)
+    db.toggle_pin_chat(chat_id, is_pinned)
+    return jsonify({"success": True})
     
 if __name__ == "__main__":
     app.run(debug=True)

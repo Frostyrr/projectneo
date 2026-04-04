@@ -79,9 +79,23 @@ class Database:
         return []
 
     def get_user_chats(self, username):
-        # Fetch all chats for the sidebar, sorted by newest first
-        chats = self.chat_history.find({"username": username}).sort("updated_at", -1)
-        return [{"chat_id": c.get("chat_id"), "title": c.get("title", "New Chat")} for c in chats]
+        # Sort by pinned first (True/1), then by updated_at (Newest first)
+        chats = self.chat_history.find({
+            "username": username,
+            "chat_id": {"$exists": True, "$ne": None}
+        }).sort([("is_pinned", -1), ("updated_at", -1)])
+        
+        return [{
+            "chat_id": c.get("chat_id"), 
+            "title": c.get("title", "New Chat"),
+            "is_pinned": c.get("is_pinned", False) # NEW: return pinned status
+        } for c in chats]
+
+    def toggle_pin_chat(self, chat_id, is_pinned):
+        self.chat_history.update_one(
+            {"chat_id": chat_id}, 
+            {"$set": {"is_pinned": is_pinned}}
+        )
 
     def rename_chat(self, chat_id, new_title):
         self.chat_history.update_one(
