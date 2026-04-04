@@ -58,25 +58,20 @@ class NeoAssistant:
     # NEW: Added chat_id as a parameter with a default value of None
     def get_response(self, username, user_input, db, chat_id=None):
         try:
-            # NEW: If no chat_id was provided by the frontend, generate a new unique one
             if not chat_id:
                 chat_id = str(uuid.uuid4())
 
-            # Check if this is a task-related command
             if any(word in user_input.lower() for word in ["task", "assignment", "remind", "schedule"]):
                 parsed = self.parse_task_with_ai(user_input)
                 task_text = parsed.get("task", "").strip()
                 task_time = parsed.get("time", "")
                 task_date = parsed.get("date", "")
 
-                # Try to parse natural language time/date
                 if task_time == "Not set" or task_date == "Not set":
                     task_time, task_date = parse_natural_time(user_input)
 
                 if task_text:
                     db.save_task(username, task_text, task_time, task_date)
-
-                    # NEW: Always return the chat_id along with the reply so the frontend remembers the session
                     if task_time != "Not set" and task_date != "Not set":
                         return f"I’ve added your task '{task_text}' on {task_date} at {task_time}.", chat_id
                     else:
@@ -84,26 +79,31 @@ class NeoAssistant:
 
                 return "Got it 👍 Please provide the task details.", chat_id
     
-            # fallback to normal chat
-            # NEW: Load messages using the unique chat_id instead of the username
-            messages = db.load_chat(chat_id)
+            # --- NORMAL CHAT FLOW ---
+            full_messages = db.load_chat(chat_id)
             
-            if not messages or messages[0].get("role") != "system":
-                messages.insert(0, {"role": "system", "content": SYSTEM_PROMPT})
+            # Create a context window for the AI (only the last 10 messages)
+            context = full_messages[-10:] if len(full_messages) > 10 else full_messages.copy()
+            if not context or context[0].get("role") != "system":
+                context.insert(0, {"role": "system", "content": SYSTEM_PROMPT})
     
-            messages.append({"role": "user", "content": user_input})
-            reply = self.call_groq(messages)
-            messages.append({"role": "assistant", "content": reply})
+            context.append({"role": "user", "content": user_input})
+            reply = self.call_groq(context)
             
-            # NEW: Save messages tied to this specific chat_id
-            db.save_chat(chat_id, username, messages)
+            # Append to the FULL message history for the database
+            full_messages.append({"role": "user", "content": user_input})
+            full_messages.append({"role": "assistant", "content": reply})
             
-            # NEW: Return a tuple of (reply, chat_id)
+            # Generate a title if this is a brand new chat
+            title = None
+            if len(full_messages) <= 2: # First interaction
+                title = user_input[:25] + "..." if len(user_input) > 25 else user_input
+            
+            db.save_chat(chat_id, username, full_messages, title=title)
             return reply, chat_id
     
         except Exception as e:
             print("ERROR:", e)
-            # NEW: Make sure even errors return the chat_id so the session doesn't break
             return "⚠️ Something went wrong.", chat_id
 
     def parse_task_with_ai(self, message):

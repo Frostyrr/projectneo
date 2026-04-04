@@ -495,6 +495,30 @@ def api_analyze_image():
     except Exception as e:
         print("General Error:", e)
         return jsonify({"error": "Failed to analyze image"}), 500
+
+# --- FOR NEW CHAT AND SESSION ---
+@app.route("/api/chats", methods=["GET"])
+def get_user_chats():
+    if "user" not in session:
+        return jsonify([]), 401
+    return jsonify(db.get_user_chats(session["user"]))
+
+@app.route("/api/chat/<chat_id>", methods=["GET"])
+def load_specific_chat(chat_id):
+    if "user" not in session:
+        return jsonify({"error": "Unauthorized"}), 401
+    messages = db.load_chat(chat_id)
+    return jsonify(messages)
+
+@app.route("/api/chat/<chat_id>/rename", methods=["PUT"])
+def rename_chat(chat_id):
+    if "user" not in session:
+        return jsonify({"error": "Unauthorized"}), 401
+    new_title = request.json.get("title")
+    if new_title:
+        db.rename_chat(chat_id, new_title)
+        return jsonify({"success": True})
+    return jsonify({"error": "No title provided"}), 400
     
 if __name__ == "__main__":
     app.run(debug=True)

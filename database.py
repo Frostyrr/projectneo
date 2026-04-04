@@ -56,21 +56,38 @@ class Database:
         self.reminders.delete_many({"username": username})
         return True
 
-    def save_chat(self, chat_id, username, messages):
+    def save_chat(self, chat_id, username, messages, title=None):
+        update_fields = {
+            "username": username,
+            "messages": messages,
+            "updated_at": datetime.utcnow()
+        }
+        if title:
+            update_fields["title"] = title
+
         self.chat_history.update_one(
             {"chat_id": chat_id},
-            {"$set": {
-                "username": username,
-                "messages": messages
-            }},
+            {"$set": update_fields, "$setOnInsert": {"created_at": datetime.utcnow()}},
             upsert=True
         )
 
     def load_chat(self, chat_id):
+        # Return ALL messages so the frontend can display the full history
         history = self.chat_history.find_one({"chat_id": chat_id})
         if history:
-            return history.get("messages", [])[-10:]
+            return history.get("messages", [])
         return []
+
+    def get_user_chats(self, username):
+        # Fetch all chats for the sidebar, sorted by newest first
+        chats = self.chat_history.find({"username": username}).sort("updated_at", -1)
+        return [{"chat_id": c.get("chat_id"), "title": c.get("title", "New Chat")} for c in chats]
+
+    def rename_chat(self, chat_id, new_title):
+        self.chat_history.update_one(
+            {"chat_id": chat_id}, 
+            {"$set": {"title": new_title}}
+        )
 
     def save_reminder(self, username, task, time_str):
         self.reminders.insert_one({
