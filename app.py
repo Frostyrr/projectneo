@@ -295,56 +295,112 @@ def api_chat():
     user_input = request.json.get("message")
     username = session["user"]
 
-    if "remind me" in user_input.lower():
-        parsed = bot.parse_reminder(user_input)
-        if "error" in parsed:
-            return jsonify({"reply": "I need a clearer date and time."})
+    if "pending_task" in session:
+        from ai_bot import parse_natural_time
 
-        task = parsed.get("task")
-        time_str = parsed.get("datetime")
-        
-        if schedule_reminder(username, task, time_str):
-            return jsonify({"reply": f"Reminder scheduled for {time_str}."})
-        return jsonify({"reply": "Failed to schedule reminder."})
+        no_schedule_phrases = ["no", "not yet", "later", "skip", "no schedule", "none", "nope", "not now"]
+        if any(phrase in user_input.lower() for phrase in no_schedule_phrases):
+            task_text = session.pop("pending_task")  # clear pending
+            db.save_task(username, task_text, "Not set", "Not set")  # ✅ save without time/date
+            return jsonify({
+                "reply": f"✅ Got it! I've saved '{task_text}' without a schedule. You can set a time later. What else can I help you with?"
+            })
+
+        fallback_time, fallback_date = parse_natural_time(user_input)
+
+        if fallback_time != "Not set" and fallback_date != "Not set":
+            task_text = session.pop("pending_task")
+            db.save_task(username, task_text, fallback_time, fallback_date)
+            return jsonify({
+                "reply": f"✅ Task added: '{task_text}' at {fallback_time} on {fallback_date}"
+            })
+        else:
+            task_text = session.pop("pending_task")
+            reply = bot.get_response(username, user_input, db)
+            return jsonify({"reply": reply})
+
+    if any(word in user_input.lower() for word in ["assignment", "task", "remind"]):
+        parsed = bot.parse_task_with_ai(user_input)
+        if "error" in parsed:
+            return jsonify({"reply": "⚠️ AI could not parse your task. Please rephrase."})
+    
+        # ✅ If no actual task extracted, ask the user what the task is
+        if not parsed.get("task"):
+            return jsonify({
+                "reply": "📝 Sure! What's the task about? (e.g. 'math homework', 'science project')"
+            })
+    
+        # Fallback: try natural language parsing
+        if parsed.get("time") == "Not set" or parsed.get("date") == "Not set":
+            from ai_bot import parse_natural_time
+            fallback_time, fallback_date = parse_natural_time(user_input)
+            if parsed.get("time") == "Not set":
+                parsed["time"] = fallback_time
+            if parsed.get("date") == "Not set":
+                parsed["date"] = fallback_date
+    
+        # If time/date still missing, store in session and ask
+        if parsed.get("time") == "Not set" or parsed.get("date") == "Not set":
+            session["pending_task"] = parsed["task"]
+            return jsonify({
+                "reply": f"📝 Got it — task: '{parsed['task']}'. When should I schedule it? (e.g. 'tomorrow at 3pm')"
+            })
+    
+        # Everything set — save
+        db.save_task(username, parsed["task"], parsed["time"], parsed["date"])
+        return jsonify({
+            "reply": f"✅ Task added: '{parsed['task']}' at {parsed['time']} on {parsed['date']}"
+        })
 
     reply = bot.get_response(username, user_input, db)
     return jsonify({"reply": reply})
 
-@app.route("/api/transcribe", methods=["POST"])
-def api_transcribe():
-    if "user" not in session:
-        return jsonify({"error": "Unauthorized"}), 401
+@app.route("/tasks")
+def tasks():
+    return render_template("task.html")
 
-    if "audio" not in request.files:
-        return jsonify({"error": "No audio file provided"}), 400
+@app.route("/api/tasks", methods=["POST"])
+def add_task():
+    # Check user session
+    username = session.get("user")
+    if not username:
+        print("No user in session!")
+        return jsonify({"error": "User not logged in"}), 401
 
-    audio_file = request.files["audio"]
-    
-    # We use Groq's ultra-fast Whisper model for transcription
-    headers = {
-        "Authorization": f"Bearer {app.config['GROQ_API_KEY']}"
-    }
-    
-    # Groq requires the file, the filename, and the content type
-    files = {
-        "file": (audio_file.filename, audio_file.read(), audio_file.content_type)
-    }
-    data = {
-        "model": "whisper-large-v3-turbo" # Groq's fastest speech-to-text model
-    }
-    
-    try:
-        # Note: This is a different URL than your chat completion URL
-        transcription_url = "https://api.groq.com/openai/v1/audio/transcriptions"
-        response = requests.post(transcription_url, headers=headers, files=files, data=data)
-        response.raise_for_status()
-        
-        result = response.json()
-        return jsonify({"text": result.get("text", "")})
-        
-    except Exception as e:
-        print("Transcription Error:", e)
-        return jsonify({"error": "Failed to transcribe audio"}), 500
+    data = request.get_json()
+
+    # Validate data
+    text = data.get("text")
+    time = data.get("time")
+    date = data.get("date")
+
+    if not text or not time or not date:
+        return jsonify({"error": "Missing fields"}), 400
+
+    # Save to MongoDB
+    db.save_task(username, text, time, date)
+
+    return jsonify({"message": "Task saved"})
+
+@app.route("/api/tasks", methods=["GET"])
+def get_tasks():
+    username = session.get("user")
+    tasks = db.get_tasks(username)
+    return jsonify(tasks)
+
+@app.route("/api/tasks/delete", methods=["POST"])
+def delete_tasks():
+    data = request.json
+    username = session.get("user")
+
+    db.delete_multiple_tasks(username, data["tasks"])
+
+    return jsonify({"message": "Deleted"})
+
+@app.route("/schedule")
+def schedule():
+    return render_template("schedule.html")
+
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -41,18 +41,47 @@
 
             <div class="sidebar-bottom">
                 <ul class="sidebar-menu">
+                
+                    <!-- TASK -->
+                    <li>
+                        <a href="/tasks">
+                            <span class="material-symbols-rounded">task</span>
+                            Tasks
+                        </a>
+                    </li>
+                
+                    <!-- SCHEDULE -->
+                    <li>
+                        <a href="/schedule">
+                            <span class="material-symbols-rounded">calendar_month</span>
+                            Class Schedule
+                        </a>
+                    </li>
+                
+                    <!-- REMINDER -->
+                    <li>
+                        <a href="/reminder">
+                            <span class="material-symbols-rounded">notifications</span>
+                            Reminder
+                        </a>
+                    </li>
+                
+                    <!-- SETTINGS -->
                     <li>
                         <a href="/settings">
                             <span class="material-symbols-rounded">settings</span>
                             Settings
                         </a>
                     </li>
+                
+                    <!-- LOGOUT -->
                     <li>
                         <a href="/logout">
                             <span class="material-symbols-rounded">logout</span>
                             Log Out
                         </a>
                     </li>
+                
                 </ul>
             </div>
         </nav>
@@ -68,7 +97,6 @@
                 </div>
                 <img src="/static/images/singleNEO.png" alt="Neo" class="header-logo">
             </header>
-
             <div id="chat-box" class="chat-box">
                 <div id="welcome-screen" class="welcome-screen">
                     <h1>Hello, {{ session.get('user', 'User') }}!</h1>

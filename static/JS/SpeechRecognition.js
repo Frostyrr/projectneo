@@ -1,78 +1,87 @@
-// --- Universal Microphone Integration (MediaRecorder + Backend) ---
 const micBtn = document.getElementById("mic-btn");
 let isRecording = false;
-let mediaRecorder;
-let audioChunks = [];
+let finalTranscript = "";
+let recognition = null;
 
-micBtn.addEventListener("click", async () => {
-    if (isRecording) {
-        // 1. Stop Recording
-        mediaRecorder.stop();
-        isRecording = false;
-        micBtn.classList.remove("recording");
-        userInput.placeholder = "Processing audio...";
-    } else {
-        // 2. Start Recording
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+if (SpeechRecognition) {
+
+    function startRecognition() {
+        recognition = new SpeechRecognition();
+        recognition.continuous = false;
+        recognition.interimResults = true;
+        recognition.lang = "en-US";
+
+        recognition.onresult = (event) => {
+            let interim = "";
+            for (let i = event.resultIndex; i < event.results.length; i++) {
+                const t = event.results[i][0].transcript;
+                if (event.results[i].isFinal) {
+                    finalTranscript += t + " ";
+                } else {
+                    interim += t;
+                }
+            }
+            userInput.value = (finalTranscript + interim).trim();
+        };
+
+        recognition.onerror = (event) => {
+            console.error("Recognition error:", event.error);
+            if (event.error === "network") {
+                alert("Speech recognition is not supported in Brave browser. Please use Chrome or Edge.");
+            } else if (event.error === "not-allowed") {
+                alert("Microphone access denied. Please allow microphone access.");
+            }
+            isRecording = false;
+            stopUI();
+        };
+
+        recognition.onend = () => {
+            if (isRecording) {
+                startRecognition();
+            } else {
+                if (userInput.value.trim() !== "") {
+                    sendMessage();
+                }
+            }
+        };
+
         try {
-            // Request microphone access (Works on Safari, Brave, Chrome, iOS)
-            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-            mediaRecorder = new MediaRecorder(stream);
-            audioChunks = [];
-
-            // Collect audio data as it records
-            mediaRecorder.ondataavailable = event => {
-                if (event.data.size > 0) {
-                    audioChunks.push(event.data);
-                }
-            };
-
-            // When recording stops, send it to the server
-            mediaRecorder.onstop = async () => {
-                // Combine audio chunks into a single file
-                const audioBlob = new Blob(audioChunks, { type: mediaRecorder.mimeType });
-                const formData = new FormData();
-                
-                // Name the file based on the browser's audio format
-                const extension = mediaRecorder.mimeType.includes("mp4") ? "mp4" : "webm";
-                formData.append("audio", audioBlob, `recording.${extension}`);
-
-                try {
-                    const response = await fetch("/api/transcribe", {
-                        method: "POST",
-                        body: formData
-                    });
-                    
-                    const data = await response.json();
-                    
-                    if (data.text) {
-                        userInput.value = data.text; // Drop the text into the input field
-                    } else {
-                        console.error("Transcription failed", data.error);
-                        userInput.placeholder = "Failed to hear that. Try again.";
-                    }
-                } catch (err) {
-                    console.error("Server error:", err);
-                }
-
-                // Clean up: Turn off the red recording dot in the browser tab
-                stream.getTracks().forEach(track => track.stop());
-                
-                // Reset placeholder after a short delay
-                setTimeout(() => {
-                    userInput.placeholder = "Ask Neo...";
-                }, 1500);
-            };
-
-            // Start the recording process
-            mediaRecorder.start();
-            isRecording = true;
-            micBtn.classList.add("recording");
-            userInput.placeholder = "Listening...";
-            userInput.value = ""; // Clear existing text
-
-        } catch (err) {
-            alert("Microphone access denied. Please check your browser permissions.");
-            console.error("Mic Error:", err);
+            recognition.start();
+        } catch (e) {
+            console.warn("Recognition start error:", e);
         }
     }
-});
+
+    micBtn.addEventListener("click", () => {
+        if (isRecording) {
+            isRecording = false;
+            if (recognition) {
+                recognition.onend = null;
+                recognition.abort();
+                recognition = null;
+            }
+            stopUI();
+            if (userInput.value.trim() !== "") {
+                sendMessage();
+            }
+        } else {
+            isRecording = true;
+            finalTranscript = "";
+            userInput.value = "";
+            micBtn.classList.add("recording");
+            userInput.placeholder = "Listening...";
+            startRecognition();
+        }
+    });
+
+    function stopUI() {
+        micBtn.classList.remove("recording");
+        userInput.placeholder = "Ask Neo...";
+    }
+
+} else {
+    if (micBtn) micBtn.style.display = "none";
+    console.warn("Speech Recognition not supported in this browser.");
+}
