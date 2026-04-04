@@ -98,7 +98,7 @@ class UIManager {
         if (imageBtn) imageBtn.style.color = ""; 
     }
 
-    renderSidebarChats(chats, onLoadChat, onRenameChat) {
+    renderSidebarChats(chats, onLoadChat, onRenameChat, onDeleteChat) {
         this.recentList.innerHTML = ""; 
 
         chats.forEach(chat => {
@@ -120,6 +120,12 @@ class UIManager {
                 onLoadChat(chat.chat_id);
             });
 
+            // Container for the edit and delete buttons
+            const btnContainer = document.createElement("div");
+            btnContainer.style.display = "flex";
+            btnContainer.style.gap = "4px";
+
+            // Rename Button
             const renameBtn = document.createElement("button");
             renameBtn.innerHTML = `<span class="material-symbols-rounded" style="font-size: 16px;">edit</span>`;
             renameBtn.style.background = "none";
@@ -135,8 +141,26 @@ class UIManager {
                 }
             });
 
+            // Delete Button
+            const deleteBtn = document.createElement("button");
+            deleteBtn.innerHTML = `<span class="material-symbols-rounded" style="font-size: 16px;">delete</span>`;
+            deleteBtn.style.background = "none";
+            deleteBtn.style.border = "none";
+            deleteBtn.style.color = "#ff4d4f"; 
+            deleteBtn.style.cursor = "pointer";
+            deleteBtn.style.padding = "5px";
+
+            deleteBtn.addEventListener("click", () => {
+                if (confirm(`Are you sure you want to delete "${chat.title}"?`)) {
+                    onDeleteChat(chat.chat_id);
+                }
+            });
+
+            btnContainer.appendChild(renameBtn);
+            btnContainer.appendChild(deleteBtn);
+            
             li.appendChild(a);
-            li.appendChild(renameBtn);
+            li.appendChild(btnContainer);
             this.recentList.appendChild(li);
         });
     }

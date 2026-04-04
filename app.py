@@ -519,6 +519,13 @@ def rename_chat(chat_id):
         db.rename_chat(chat_id, new_title)
         return jsonify({"success": True})
     return jsonify({"error": "No title provided"}), 400
+
+@app.route("/api/chat/<chat_id>", methods=["DELETE"])
+def delete_chat(chat_id):
+    if "user" not in session:
+        return jsonify({"error": "Unauthorized"}), 401
+    db.delete_chat(chat_id)
+    return jsonify({"success": True})
     
 if __name__ == "__main__":
     app.run(debug=True)

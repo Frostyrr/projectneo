@@ -22,6 +22,13 @@ class ApiService {
         return response.json();
     }
 
+    static async deleteChat(chatId) {
+        const response = await fetch(`/api/chat/${chatId}`, {
+            method: "DELETE"
+        });
+        return response.json();
+    }
+
     static async sendTextMessage(message, chatId) {
         const response = await fetch("/api/chat", {
             method: "POST",

@@ -89,6 +89,9 @@ class Database:
             {"$set": {"title": new_title}}
         )
 
+    def delete_chat(self, chat_id):
+        self.chat_history.delete_one({"chat_id": chat_id})
+
     def save_reminder(self, username, task, time_str):
         self.reminders.insert_one({
             "username": username,
@@ -144,3 +147,5 @@ class Database:
                 "time": task["time"],
                 "date": task["date"]
             })
+
+        

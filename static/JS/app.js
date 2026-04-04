@@ -38,10 +38,28 @@ class NeoApp {
             this.ui.renderSidebarChats(
                 chats, 
                 (chatId) => this.loadSpecificChat(chatId), 
-                (chatId, newTitle) => this.renameSpecificChat(chatId, newTitle)
+                (chatId, newTitle) => this.renameSpecificChat(chatId, newTitle),
+                (chatId) => this.deleteSpecificChat(chatId) // NEW: Pass the delete function
             );
         } catch (error) {
             console.error("Failed to load sidebar chats:", error);
+        }
+    }
+
+    // NEW: Handle the deletion process
+    async deleteSpecificChat(chatId) {
+        try {
+            await ApiService.deleteChat(chatId);
+            
+            // If the user deleted the chat they are currently looking at, clear the screen
+            if (this.currentChatId === chatId) {
+                this.currentChatId = null;
+                this.ui.showWelcomeScreen();
+            }
+            
+            this.loadSidebar(); // Refresh the list to remove the deleted item
+        } catch (error) {
+            console.error("Failed to delete chat:", error);
         }
     }
 
