@@ -13,6 +13,8 @@
 </head>
 <body>
     <div class="app-container">
+        
+        <!-- SIDE BAR SECTION -->
         <nav id="sidebar" class="sidebar">
             <div class="sidebar-top">
                 <button id="menu-btn" class="icon-btn" title="Collapse menu">
@@ -104,15 +106,31 @@
                 </div>
             </div>
 
+            <!-- INPUT FIELD / CHAT BOX -->
             <div class="input-wrapper">
                 <div class="input-container">
+
+                    <!-- UPLOAD BUTTON -->
+                    <div id="image-preview-container" style="display: none; position: relative; margin-bottom: 8px;">
+                            <img id="image-preview" src="" alt="Preview" style="max-height: 60px; border-radius: 8px; border: 1px solid #444;">
+                            <button id="remove-image-btn" style="position: absolute; top: -5px; right: -5px; background: #ff4d4d; color: white; border: none; border-radius: 50%; cursor: pointer; width: 20px; height: 20px; font-size: 12px; display: flex; align-items: center; justify-content: center;">✖</button>
+                    </div>
+
+                    <input type="file" id="image-upload" accept="image/png, image/jpeg, image/webp" style="display: none;">
+                        
+                    <button id="image-btn" class="mic-icon-btn" title="Upload Image" onclick="document.getElementById('image-upload').click()">
+                        <span class="material-symbols-rounded">attach_file</span>
+                    </button>
+
+                    <!-- CHAT BOX -->
                     <input type="text" id="user-input" placeholder="Ask Neo..." autocomplete="off">
 
+                    <!-- VOICE CHAT BUTTON -->
                     <button id="mic-btn" class="mic-icon-btn" title="Use Voice">
                         <span class="material-symbols-rounded">mic</span>
                     </button>
 
-
+                    <!-- SEND BUTTON -->
                     <button id="send-btn" class="send-icon-btn">
                         <span class="material-symbols-rounded">send</span>
                     </button>
@@ -125,5 +143,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.1/marked.min.js"></script>
     <script src="/static/JS/script.js"></script>
     <script src="/static/JS/SpeechRecognition.js"></script>
+    <script src="/static/JS/ImageUpload.js"></script>
 </body>
 </html>

@@ -9,6 +9,7 @@ from ai_bot import NeoAssistant
 
 import random
 import requests
+import base64
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -406,6 +407,74 @@ def delete_tasks():
 def schedule():
     return render_template("schedule.html")
 
+# --- VISION ROUTE FOR IMAGE PROCESSING ---
+@app.route("/api/analyze-image", methods=["POST"])
+def api_analyze_image():
+    if "user" not in session:
+        return jsonify({"error": "Unauthorized"}), 401
 
+    if "image" not in request.files:
+        return jsonify({"error": "No image provided"}), 400
+
+    image_file = request.files["image"]
+    user_prompt = request.form.get("prompt", "Describe this image.")
+    
+    # 1. Convert the image to a Base64 string IN MEMORY (Bypasses Render's disk limits)
+    base64_image = base64.b64encode(image_file.read()).decode('utf-8')
+    mime_type = image_file.content_type
+
+    # 2. Prepare the request for Groq's Vision Model
+    headers = {
+        "Authorization": f"Bearer {app.config['GROQ_API_KEY']}",
+        "Content-Type": "application/json"
+    }
+    
+    payload = {
+        "model": "meta-llama/llama-4-scout-17b-16e-instruct",
+        "messages": [
+            {
+                "role": "user",
+                "content": [
+                    {"type": "text", "text": user_prompt},
+                    {
+                        "type": "image_url",
+                        "image_url": {
+                            "url": f"data:{mime_type};base64,{base64_image}"
+                        }
+                    }
+                ]
+            }
+        ],
+        "max_tokens": 1024,  # NEW: Prevents length-based 400 errors
+        "temperature": 0.2   # NEW: Makes the AI more analytical 
+    }
+    
+    try:
+        response = requests.post("https://api.groq.com/openai/v1/chat/completions", headers=headers, json=payload)
+        response.raise_for_status()
+        
+        # Extract the AI's text response
+        ai_analysis = response.json()["choices"][0]["message"]["content"]
+        
+        # Save the interaction to MongoDB chat history
+        username = session["user"]
+        messages = db.load_chat(username)
+        messages.append({"role": "user", "content": f"[Uploaded Image] {user_prompt}"})
+        messages.append({"role": "assistant", "content": ai_analysis})
+        db.save_chat(username, messages)
+        
+        return jsonify({"reply": ai_analysis})
+        
+    except requests.exceptions.HTTPError as e:
+            print("Vision API Error:", e)
+            # NEW: Print Groq's exact complaint to the terminal
+            if hasattr(e, 'response') and e.response is not None:
+                print("GROQ DETAILED ERROR:", e.response.text)
+            return jsonify({"error": "Failed to analyze image"}), 500
+            
+    except Exception as e:
+        print("General Error:", e)
+        return jsonify({"error": "Failed to analyze image"}), 500
+    
 if __name__ == "__main__":
     app.run(debug=True)

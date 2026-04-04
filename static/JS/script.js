@@ -35,40 +35,96 @@ userInput.addEventListener("keypress", function(e) {
 
 function sendMessage() {
     const message = userInput.value.trim();
-    if (!message) return;
+    
+    // Don't send if the input is empty AND there is no image attached
+    if (!message && !window.attachedImageFile) return;
 
     if (welcomeScreen) welcomeScreen.style.display = "none";
 
-    appendMessage(message, "user");
+    // 1. Display the user's message in the chat
+    if (window.attachedImageFile) {
+        // Generate a URL to show the image in the chat history
+        const chatImageUrl = URL.createObjectURL(window.attachedImageFile);
+            
+        // Wrap the image in HTML and attach the user's text below it
+        const imageHtml = `<img src="${chatImageUrl}" style="max-width: 200px; border-radius: 8px; margin-bottom: 5px; display: block;">`;
+        appendMessage(`${imageHtml}${message}`, "user");
+    } else {
+        appendMessage(message, "user");
+    }
+
+    // 2. Clear the input box and hide the preview container
     userInput.value = "";
+        
+    const previewContainer = document.getElementById("image-preview-container");
+        if (previewContainer) previewContainer.style.display = "none";
 
-    const isTask = message.toLowerCase().includes("task") ||
-                   message.toLowerCase().includes("assignment") ||
-                   message.toLowerCase().includes("remind") ||
-                   message.toLowerCase().includes("schedule");
+    // ==========================================
+    // FORK A: IMAGE UPLOAD ROUTE (Vision API)
+    // ==========================================
+    if (window.attachedImageFile) {
+        const formData = new FormData();
+        formData.append("image", window.attachedImageFile);
+        
+        // If the user typed a message, use it. Otherwise, use your default schedule prompt.
+        const customPrompt = message ? message : "Analyze this schedule. Extract all events, times, days, and locations. Format them into a clean, easy-to-read list.";
+        formData.append("prompt", customPrompt);
 
+        // Clear the holding zone and reset the UI immediately
+        window.attachedImageFile = null;
+        userInput.placeholder = "Ask Neo...";
+        const imageBtn = document.getElementById("image-btn");
+        if (imageBtn) imageBtn.style.color = ""; 
 
-    // 2️⃣ Always send to AI chat
-    fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message })
-    })
-    .then(response => response.json())
-    .then(data => {
-        appendMessage(data.reply, "bot");
-    
-        if (data.new_task) {
-            // Add to local tasks and render
-            tasks.push({
-                text: data.new_task.task,
-                time: data.new_task.time,
-                date: data.new_task.date
-            });
-            renderTasks();
-        }
-    })
-    .catch(err => appendMessage("Error connecting to server.", "bot"));
+        fetch("/api/analyze-image", {
+            method: "POST",
+            body: formData
+        })
+        .then(response => {
+            if (!response.ok) throw new Error(`Server crashed with status: ${response.status}`);
+            return response.json();
+        })
+        .then(data => {
+            if (data.reply) {
+                appendMessage(data.reply, "bot");
+            } else {
+                appendMessage("❌ Analysis Failed: " + data.error, "bot");
+            }
+        })
+        .catch(err => {
+            console.error("Upload Error:", err);
+            appendMessage("❌ Critical Error: " + err.message, "bot");
+        });
+
+    // ==========================================
+    // FORK B: NORMAL TEXT ROUTE (Chat API)
+    // ==========================================
+    } else {
+        const isTask = message.toLowerCase().includes("task") ||
+                       message.toLowerCase().includes("assignment") ||
+                       message.toLowerCase().includes("remind") ||
+                       message.toLowerCase().includes("schedule");
+
+        fetch("/api/chat", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message })
+        })
+        .then(response => response.json())
+        .then(data => {
+            appendMessage(data.reply, "bot");
+        
+            if (data.new_task) {
+                tasks.push({
+                    text: data.new_task.task,
+                    time: data.new_task.time,
+                    date: data.new_task.date
+                });
+                renderTasks();
+            }
+        })
+        .catch(err => appendMessage("Error connecting to server.", "bot"));
+    }
 }
 
 function appendMessage(message, sender) {
@@ -132,7 +188,7 @@ function appendMessage(message, sender) {
         innerWrapper.appendChild(actionsDiv);
 
     } else {
-        contentDiv.textContent = message;
+        contentDiv.innerHTML = message;
         innerWrapper.appendChild(contentDiv);
     }
     
