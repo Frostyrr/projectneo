@@ -47,7 +47,7 @@ function sendMessage() {
         const chatImageUrl = URL.createObjectURL(window.attachedImageFile);
             
         // Wrap the image in HTML and attach the user's text below it
-        const imageHtml = `<img src="${chatImageUrl}" style="max-width: 200px; border-radius: 8px; margin-bottom: 5px; display: block;">`;
+        const imageHtml = `<img src="${chatImageUrl}" style="max-width: 200px; border-radius: 8px; margin-bottom: 5px; display: block; cursor: pointer;" class="chat-image">`;
         appendMessage(`${imageHtml}${message}`, "user");
     } else {
         appendMessage(message, "user");
@@ -198,3 +198,31 @@ function appendMessage(message, sender) {
     // Smooth scroll to bottom
     chatBox.scrollTop = chatBox.scrollHeight;
 }
+
+// ==========================================
+// IMAGE LIGHTBOX LOGIC
+// ==========================================
+const imageModal = document.getElementById("image-modal");
+const modalImg = document.getElementById("modal-img");
+const closeModal = document.getElementById("close-modal");
+
+// 1. Listen for clicks anywhere inside the chat box
+chatBox.addEventListener("click", (event) => {
+    // If the thing they clicked was an image (and NOT Neo's avatar icon)
+    if (event.target.tagName === "IMG" && !event.target.classList.contains("bot-avatar")) {
+        imageModal.style.display = "flex"; // Unhide the modal
+        modalImg.src = event.target.src;   // Copy the image source to the big screen
+    }
+});
+
+// 2. Close the modal when the X is clicked
+closeModal.addEventListener("click", () => {
+    imageModal.style.display = "none";
+});
+
+// 3. Close the modal if they click anywhere in the dark background
+imageModal.addEventListener("click", (event) => {
+    if (event.target === imageModal) {
+        imageModal.style.display = "none";
+    }
+});
