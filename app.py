@@ -10,6 +10,7 @@ from ai_bot import NeoAssistant
 import random
 import requests
 import base64
+import uuid # NEW: Imported for generating unique chat IDs
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -299,6 +300,7 @@ def api_chat():
         return jsonify({"error": "Unauthorized"}), 401
 
     user_input = request.json.get("message")
+    chat_id = request.json.get("chat_id") # NEW: Extract chat_id sent from frontend
     username = session["user"]
 
     if "pending_task" in session:
@@ -308,8 +310,10 @@ def api_chat():
         if any(phrase in user_input.lower() for phrase in no_schedule_phrases):
             task_text = session.pop("pending_task")  # clear pending
             db.save_task(username, task_text, "Not set", "Not set")  # ✅ save without time/date
+            # NEW: Return the chat_id so frontend keeps track of the session
             return jsonify({
-                "reply": f"✅ Got it! I've saved '{task_text}' without a schedule. You can set a time later. What else can I help you with?"
+                "reply": f"✅ Got it! I've saved '{task_text}' without a schedule. You can set a time later. What else can I help you with?",
+                "chat_id": chat_id 
             })
 
         fallback_time, fallback_date = parse_natural_time(user_input)
@@ -318,22 +322,28 @@ def api_chat():
             task_text = session.pop("pending_task")
             db.save_task(username, task_text, fallback_time, fallback_date)
             return jsonify({
-                "reply": f"✅ Task added: '{task_text}' at {fallback_time} on {fallback_date}"
+                "reply": f"✅ Task added: '{task_text}' at {fallback_time} on {fallback_date}",
+                "chat_id": chat_id # NEW
             })
         else:
             task_text = session.pop("pending_task")
-            reply = bot.get_response(username, user_input, db)
-            return jsonify({"reply": reply})
+            # NEW: Provide and receive the chat_id from the bot
+            reply, new_chat_id = bot.get_response(username, user_input, db, chat_id)
+            return jsonify({"reply": reply, "chat_id": new_chat_id}) # NEW
 
     if any(word in user_input.lower() for word in ["assignment", "task", "remind"]):
         parsed = bot.parse_task_with_ai(user_input)
         if "error" in parsed:
-            return jsonify({"reply": "⚠️ AI could not parse your task. Please rephrase."})
+            return jsonify({
+                "reply": "⚠️ AI could not parse your task. Please rephrase.",
+                "chat_id": chat_id # NEW
+            })
     
         # ✅ If no actual task extracted, ask the user what the task is
         if not parsed.get("task"):
             return jsonify({
-                "reply": "📝 Sure! What's the task about? (e.g. 'math homework', 'science project')"
+                "reply": "📝 Sure! What's the task about? (e.g. 'math homework', 'science project')",
+                "chat_id": chat_id # NEW
             })
     
         # Fallback: try natural language parsing
@@ -349,17 +359,20 @@ def api_chat():
         if parsed.get("time") == "Not set" or parsed.get("date") == "Not set":
             session["pending_task"] = parsed["task"]
             return jsonify({
-                "reply": f"📝 Got it — task: '{parsed['task']}'. When should I schedule it? (e.g. 'tomorrow at 3pm')"
+                "reply": f"📝 Got it — task: '{parsed['task']}'. When should I schedule it? (e.g. 'tomorrow at 3pm')",
+                "chat_id": chat_id # NEW
             })
     
         # Everything set — save
         db.save_task(username, parsed["task"], parsed["time"], parsed["date"])
         return jsonify({
-            "reply": f"✅ Task added: '{parsed['task']}' at {parsed['time']} on {parsed['date']}"
+            "reply": f"✅ Task added: '{parsed['task']}' at {parsed['time']} on {parsed['date']}",
+            "chat_id": chat_id # NEW
         })
 
-    reply = bot.get_response(username, user_input, db)
-    return jsonify({"reply": reply})
+    # NEW: Standard chat loop gets and returns chat_id
+    reply, new_chat_id = bot.get_response(username, user_input, db, chat_id)
+    return jsonify({"reply": reply, "chat_id": new_chat_id})
 
 @app.route("/tasks")
 def tasks():
@@ -418,6 +431,11 @@ def api_analyze_image():
 
     image_file = request.files["image"]
     user_prompt = request.form.get("prompt", "Describe this image.")
+    chat_id = request.form.get("chat_id") # NEW: Get chat_id from FormData
+    
+    # NEW: Ensure a chat_id is generated if it's the very first message
+    if not chat_id:
+        chat_id = str(uuid.uuid4())
     
     # 1. Convert the image to a Base64 string IN MEMORY (Bypasses Render's disk limits)
     base64_image = base64.b64encode(image_file.read()).decode('utf-8')
@@ -458,16 +476,18 @@ def api_analyze_image():
         
         # Save the interaction to MongoDB chat history
         username = session["user"]
-        messages = db.load_chat(username)
+        messages = db.load_chat(chat_id) # NEW: load specifically by chat_id
         messages.append({"role": "user", "content": f"[Uploaded Image] {user_prompt}"})
         messages.append({"role": "assistant", "content": ai_analysis})
-        db.save_chat(username, messages)
         
-        return jsonify({"reply": ai_analysis})
+        # NEW: save specifically by chat_id
+        db.save_chat(chat_id, username, messages) 
+        
+        # NEW: return the chat_id so frontend can keep track
+        return jsonify({"reply": ai_analysis, "chat_id": chat_id})
         
     except requests.exceptions.HTTPError as e:
             print("Vision API Error:", e)
-            # NEW: Print Groq's exact complaint to the terminal
             if hasattr(e, 'response') and e.response is not None:
                 print("GROQ DETAILED ERROR:", e.response.text)
             return jsonify({"error": "Failed to analyze image"}), 500

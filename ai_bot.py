@@ -2,6 +2,7 @@ import requests
 import json
 import dateparser
 from datetime import datetime
+import uuid
 
 SYSTEM_PROMPT = """You are NEO, a personal AI assistant designed to help the user manage tasks, schedules, and daily activities.
 
@@ -54,8 +55,14 @@ class NeoAssistant:
             print("GROQ ERROR:", e)
             return "Error from AI"
 
-    def get_response(self, username, user_input, db):
+    # NEW: Added chat_id as a parameter with a default value of None
+    def get_response(self, username, user_input, db, chat_id=None):
         try:
+            # NEW: If no chat_id was provided by the frontend, generate a new unique one
+            if not chat_id:
+                chat_id = str(uuid.uuid4())
+
+            # Check if this is a task-related command
             if any(word in user_input.lower() for word in ["task", "assignment", "remind", "schedule"]):
                 parsed = self.parse_task_with_ai(user_input)
                 task_text = parsed.get("task", "").strip()
@@ -69,27 +76,35 @@ class NeoAssistant:
                 if task_text:
                     db.save_task(username, task_text, task_time, task_date)
 
+                    # NEW: Always return the chat_id along with the reply so the frontend remembers the session
                     if task_time != "Not set" and task_date != "Not set":
-                        return f"I’ve added your task '{task_text}' on {task_date} at {task_time}."
+                        return f"I’ve added your task '{task_text}' on {task_date} at {task_time}.", chat_id
                     else:
-                        return f"Ok, noted '{task_text}'. What else would you like to add or schedule?"
+                        return f"Ok, noted '{task_text}'. What else would you like to add or schedule?", chat_id
 
-                return "Got it 👍 Please provide the task details."
+                return "Got it 👍 Please provide the task details.", chat_id
     
             # fallback to normal chat
-            messages = db.load_chat(username)
+            # NEW: Load messages using the unique chat_id instead of the username
+            messages = db.load_chat(chat_id)
+            
             if not messages or messages[0].get("role") != "system":
                 messages.insert(0, {"role": "system", "content": SYSTEM_PROMPT})
     
             messages.append({"role": "user", "content": user_input})
             reply = self.call_groq(messages)
             messages.append({"role": "assistant", "content": reply})
-            db.save_chat(username, messages)
-            return reply
+            
+            # NEW: Save messages tied to this specific chat_id
+            db.save_chat(chat_id, username, messages)
+            
+            # NEW: Return a tuple of (reply, chat_id)
+            return reply, chat_id
     
         except Exception as e:
             print("ERROR:", e)
-            return "⚠️ Something went wrong."
+            # NEW: Make sure even errors return the chat_id so the session doesn't break
+            return "⚠️ Something went wrong.", chat_id
 
     def parse_task_with_ai(self, message):
         messages = [

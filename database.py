@@ -2,6 +2,7 @@ from pymongo import MongoClient
 from werkzeug.security import generate_password_hash, check_password_hash
 import certifi
 from datetime import datetime, timedelta
+import uuid
 
 class Database:
     def __init__(self, uri):
@@ -55,15 +56,18 @@ class Database:
         self.reminders.delete_many({"username": username})
         return True
 
-    def save_chat(self, username, messages):
+    def save_chat(self, chat_id, username, messages):
         self.chat_history.update_one(
-            {"username": username},
-            {"$set": {"messages": messages}},
+            {"chat_id": chat_id},
+            {"$set": {
+                "username": username,
+                "messages": messages
+            }},
             upsert=True
         )
 
-    def load_chat(self, username):
-        history = self.chat_history.find_one({"username": username})
+    def load_chat(self, chat_id):
+        history = self.chat_history.find_one({"chat_id": chat_id})
         if history:
             return history.get("messages", [])[-10:]
         return []

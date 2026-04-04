@@ -226,3 +226,39 @@ imageModal.addEventListener("click", (event) => {
         imageModal.style.display = "none";
     }
 });
+
+// track current session
+
+let currentChatId = null; // Track the active session
+
+// 1. Update your fetch request to send the chat_id
+fetch("/api/chat", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ 
+        message: message,
+        chat_id: currentChatId // Send the current ID
+    })
+})
+.then(response => response.json())
+.then(data => {
+    // 2. Save the chat_id that the server gives back
+    if (data.chat_id) {
+        currentChatId = data.chat_id;
+    }
+    
+    appendMessage(data.reply, "bot");
+})
+
+// 3. Make the "New Chat" button work
+const newChatBtn = document.getElementById("new-chat-btn");
+newChatBtn.addEventListener("click", () => {
+    currentChatId = null; // Reset the session ID
+    chatBox.innerHTML = ""; // Clear the screen
+    
+    // Put the welcome screen back
+    if (welcomeScreen) {
+        welcomeScreen.style.display = "block";
+        chatBox.appendChild(welcomeScreen);
+    }
+});
