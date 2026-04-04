@@ -29,6 +29,15 @@ class ApiService {
         return response.json();
     }
 
+    static async togglePinChat(chatId, isPinned) {
+        const response = await fetch(`/api/chat/${chatId}/pin`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ is_pinned: isPinned })
+        });
+        return response.json();
+    }
+
     static async sendTextMessage(message, chatId) {
         const response = await fetch("/api/chat", {
             method: "POST",

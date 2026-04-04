@@ -41,50 +41,71 @@
                 </ul>
             </div>
 
-            <div class="sidebar-bottom">
+        <!-- SIDE BAR-->
+        <nav id="sidebar" class="sidebar">
+            <div class="sidebar-top">
+                <button id="menu-btn" class="icon-btn" title="Collapse menu">
+                    <span class="material-symbols-rounded">menu</span>
+                </button>
+            </div>
+            
+            <div class="sidebar-new-chat">
+                <button id="new-chat-btn" class="new-chat-btn">
+                    <span class="material-symbols-rounded">add</span>
+                    <span>New chat</span>
+                </button>
+            </div>
+
+            <div class="sidebar-features" style="padding: 0 20px 10px 20px; border-bottom: 1px solid #333538; margin-bottom: 10px;">
                 <ul class="sidebar-menu">
-                
-                    <!-- TASK -->
                     <li>
-                        <a href="/task">
+                        <a href="/tasks">
                             <span class="material-symbols-rounded">task</span>
                             Tasks
                         </a>
                     </li>
-                
-                    <!-- SCHEDULE -->
                     <li>
                         <a href="/schedule">
                             <span class="material-symbols-rounded">calendar_month</span>
                             Class Schedule
                         </a>
                     </li>
-                
-                    <!-- REMINDER -->
                     <li>
                         <a href="/reminder">
                             <span class="material-symbols-rounded">notifications</span>
                             Reminder
                         </a>
                     </li>
-                
-                    <!-- SETTINGS -->
-                    <li>
-                        <a href="/settings">
-                            <span class="material-symbols-rounded">settings</span>
-                            Settings
-                        </a>
-                    </li>
-                
-                    <!-- LOGOUT -->
-                    <li>
-                        <a href="/logout">
-                            <span class="material-symbols-rounded">logout</span>
-                            Log Out
-                        </a>
-                    </li>
-                
                 </ul>
+            </div>
+
+            <div class="sidebar-middle">
+                <p class="recent-title">Recent Chats</p>
+                <ul class="recent-list">
+                    </ul>
+            </div>
+
+            <div class="sidebar-bottom" style="padding: 0;">
+                <div class="user-profile-wrapper">
+                    <div id="user-dropdown-menu" class="floating-dropdown hidden">
+                        <a href="/settings" class="dropdown-item">
+                            <span class="material-symbols-rounded">settings</span> Settings
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="/logout" class="dropdown-item danger-text">
+                            <span class="material-symbols-rounded">logout</span> Log out
+                        </a>
+                    </div>
+                    
+                    <button id="user-profile-btn" class="user-profile-btn">
+                        <div class="user-profile-info">
+                            <div class="user-avatar-circle">
+                                <span class="material-symbols-rounded">person</span>
+                            </div>
+                            <span class="user-name">{{ session.get('user', 'User') }}</span>
+                        </div>
+                    </button>
+                </div>
             </div>
         </nav>
 

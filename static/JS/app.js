@@ -39,10 +39,21 @@ class NeoApp {
                 chats, 
                 (chatId) => this.loadSpecificChat(chatId), 
                 (chatId, newTitle) => this.renameSpecificChat(chatId, newTitle),
-                (chatId) => this.deleteSpecificChat(chatId) // NEW: Pass the delete function
+                (chatId) => this.deleteSpecificChat(chatId),
+                (chatId, isPinned) => this.togglePinChat(chatId, isPinned) // NEW: Pass the Pin function
             );
         } catch (error) {
             console.error("Failed to load sidebar chats:", error);
+        }
+    }
+
+    // NEW: Handle Pinning
+    async togglePinChat(chatId, isPinned) {
+        try {
+            await ApiService.togglePinChat(chatId, isPinned);
+            this.loadSidebar(); // Refresh the sidebar to instantly re-sort the list
+        } catch (error) {
+            console.error("Failed to pin chat:", error);
         }
     }
 
