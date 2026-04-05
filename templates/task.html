@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tasks - Neo</title>
+    <link rel="icon" type="image/x-icon" href="/static/images/singleNEO.png">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded" />
+    <link rel="stylesheet" href="/static/CSS/tasks.css">
+</head>
+<body>
+
+<div class="tasks-layout">
+    <header class="tasks-header">
+        <a href="/chat" class="back-btn">
+            <span class="material-symbols-rounded">arrow_back</span>
+        </a>
+        <h2>My Tasks</h2>
+    </header>
+
+    <main class="tasks-content">
+        <div class="tasks-card">
+            <div class="task-form">
+                <input type="text" id="taskInput" placeholder="Task" required>
+                <input type="time" id="timeInput" required>
+                <input type="date" id="dateInput" required>
+                        
+                <div class="task-buttons">
+                    <button id="addTaskBtn">Add</button>
+                    <button id="deleteTaskBtn">Delete</button>
+                </div>
+            </div>
+
+            <div class="tasks-table-container">
+                <table id="tasksTable">
+                    <thead>
+                        <tr id="tasksHeaderRow">
+                            <th>Task</th>
+                            <th>Time</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script src="/static/JS/tasks.js"></script>
+</body>
+</html>

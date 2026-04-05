@@ -1,0 +1,533 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background-color: #131314; 
+    color: #e3e3e3;
+    overflow-x: hidden;
+}
+
+.material-symbols-rounded {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    vertical-align: middle;
+}
+
+/* --- Hero Section & Nav --- */
+.landing-hero {
+    min-height: 100vh;
+    width: 100%;
+    background: linear-gradient(rgba(31, 39, 32, 0.85), rgba(19, 19, 20, 0.95)), url('/static/images/hero-bg.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    padding: 0 5%;
+}
+
+.landing-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 30px 0;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.nav-brand {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+.nav-brand img {
+    height: 35px; 
+    width: auto;
+}
+
+.nav-links {
+    display: flex;
+    gap: 30px;
+}
+
+.nav-links a {
+    color: #e3e3e3;
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 500;
+    padding: 5px 10px;
+    border: 2px solid transparent;
+    border-radius: 5px;
+    transition: color 0.2s, background-color 0.2s, border-color 0.2s;
+    transition: transform 0.2s;
+    transform-origin: center;
+}
+
+.nav-links a:hover {
+    cursor: pointer;
+    transform: translateY(-2px);
+    background-color: rgb(230, 230, 230);
+    color: #1e5737;
+}
+
+.hero-content-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+    gap: 60px;
+    padding-bottom: 40px;
+}
+
+.hero-text-section {
+    flex: 1;
+    color: white;
+}
+
+.hero-text-section h1 {
+    font-size: 64px;
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 10px;
+}
+
+.hero-text-section h2 {
+    font-size: 24px;
+    font-weight: 400;
+    margin-bottom: 24px;
+    color: #a0a0a0;
+}
+
+.hero-text-section p {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #c4c7c5;
+    max-width: 500px;
+    margin-bottom: 40px;
+}
+
+.btn-outline {
+    display: inline-block;
+    padding: 12px 32px;
+    border: 2px solid white;
+    border-radius: 30px;
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.2s;
+    transform-origin: center;
+}
+
+.btn-outline:hover {
+    cursor: pointer;
+    transform: translateY(-2px);
+    background: white;
+    color: #131314;
+}
+
+/* --- Modern Auth Card --- */
+.hero-form-section {
+    width: 100%;
+    max-width: 420px;
+}
+
+.auth-card {
+    background-color: #1e1f20;
+    border-radius: 16px;
+    padding: 40px;
+    border: 1px solid #333538;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+}
+
+.auth-card-title {
+    color: #e3e3e3;
+    font-size: 24px;
+    font-weight: 500;
+    margin-bottom: 30px;
+}
+
+.auth-form {
+    display: flex;
+    flex-direction: column;
+}
+
+/* --- Uniform Inputs --- */
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    font-size: 14px;
+    color: #c4c7c5;
+}
+
+.input-with-icon {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-with-icon .material-symbols-rounded {
+    position: absolute;
+    left: 16px;
+    color: #a0a0a0;
+    font-size: 20px;
+}
+
+.input-with-icon input {
+    width: 100%;
+    background-color: #131314;
+    border: 1px solid #333538;
+    color: #e3e3e3;
+    padding: 14px 16px 14px 48px;
+    border-radius: 8px;
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.input-with-icon input:focus {
+    border-color: #1e5737;
+}
+
+.input-with-icon input::placeholder {
+    color: #666;
+}
+
+/* --- Buttons & Links --- */
+.btn-primary {
+    background-color: #ffffff;
+    color: #131314;
+    border: none;
+    padding: 14px;
+    font-size: 15px;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+    margin-top: 10px;
+    width: 100%;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(90deg,rgba(30, 87, 55, 1) 0%, rgb(4, 167, 91) 100%);
+    transition: ease 0.2s;
+    color: rgb(232, 232, 232);
+}
+
+.forgot-password {
+    display: inline-block;
+    text-align: right;
+    font-size: 13px;
+    color: #07853e;
+    text-decoration: none;
+    margin-top: -8px;
+    margin-bottom: 24px;
+    transition: color 0.2s, transform 0.2s;
+    transform-origin: center;
+}
+
+.forgot-password:hover {
+    cursor: pointer;
+    color: rgb(0, 210, 91);
+    text-decoration: underline;
+    transform: translateY(-2px);
+}
+
+.auth-footer {
+    margin-top: 24px;
+    text-align: center;
+    font-size: 14px;
+    color: #a0a0a0;
+}
+
+.auth-link {
+    display: inline-block;
+    color: #07853e;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s, transform 0.2s;
+}
+
+.auth-link:hover {
+    cursor: pointer;
+    color: rgb(0, 210, 91);
+    transform: translateY(-2px);
+    text-decoration: underline;
+}
+
+.auth-error {
+    background-color: rgba(217, 48, 37, 0.1);
+    color: #f28b82;
+    padding: 10px 14px;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    font-size: 13px;
+    border: 1px solid rgba(217, 48, 37, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    animation: fadeIn 0.3s ease;
+}
+
+.auth-error .material-symbols-rounded {
+    font-size: 18px;
+    color: #f28b82;
+}
+
+#otp {
+    letter-spacing: 4px;
+    font-weight: 600;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+/* ---------------- EXTRA SECTIONS ---------------- */
+.landing-section {
+    padding: 100px 5%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.section-title {
+    font-size: 36px;
+    margin-bottom: 50px;
+    text-align: center;
+    color: #fff;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 40px;
+}
+
+.feature-card {
+    background: #1e1f20;
+    padding: 30px;
+    border-radius: 16px;
+    border: 1px solid #333538;
+}
+
+.feature-card::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0%;
+    height: 3px;
+    background-color: rgb(0, 124, 54);
+    border-radius: 2px; 
+    transition: width 1s ease; 
+    
+}
+
+.feature-card:hover {
+    background: #202121;
+    transform: translateY(-2px);
+    transition: transform 0.2s ease;
+}
+
+.feature-card:hover::after {
+    width: 100%; 
+}
+
+.feature-card .material-symbols-rounded {
+    font-size: 40px;
+    color: #157940;
+    margin-bottom: 20px;
+}
+
+.feature-card h3 {
+    margin-bottom: 15px;
+    font-size: 20px;
+    color: #e3e3e3;
+}
+
+.feature-card p {
+    color: #a0a0a0;
+    line-height: 1.6;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 15px; 
+    left: auto !important;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #a0a0a0;
+    font-size: 20px !important;
+    user-select: none;
+    transition: color 0.3s ease;
+    z-index: 10;
+}
+
+.toggle-password:hover {
+    color: #ffffff;
+}
+
+.input-with-icon input[type="password"],
+.input-with-icon input[type="text"] {
+    padding-right: 40px; 
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .hero-content-wrapper {
+        display: flex;
+        flex-direction: column-reverse; /* Forces the login card to the top */
+        margin-top: 10px;
+        gap: 30px;
+    }
+    
+    .hero-form-section {
+        width: 100%;
+        animation: none; /* Removes slide animation on mobile for a faster feel */
+    }
+
+    .auth-card {
+        margin-top: 40px;
+        margin-bottom: 45px;
+        padding: 24px 20px; /* Slimmer padding for mobile */
+    }
+
+    .hero-text-section {
+        text-align: center;
+        animation: none;
+    }
+
+    /* Shrink the Neo title for mobile */
+    .hero-text-section h1 {
+        font-size: 42px;
+    }
+    
+    /* Hide the paragraph, "Learn More" button, and nav links to make it a pure login screen */
+    .hero-text-section p, 
+    .btn-outline,
+    .nav-links {
+        display: none;
+    }
+}
+
+/* --- Mobile Phone Adjustments --- */
+@media (max-width: 600px) {
+    /* Scale down the massive hero text */
+    .hero-text-section h1 {
+        font-size: 42px; 
+    }
+    
+    .hero-text-section h2 {
+        font-size: 20px;
+    }
+    
+    /* Reduce padding so input fields have more room to breathe */
+    .auth-card {
+        padding: 30px 20px; 
+        border-radius: 12px;
+    }
+    
+    /* Reduce the massive gap between the hero text and the form */
+    .hero-content-wrapper {
+        gap: 20px;
+    }
+    
+    /* Make the extra sections less padded on small screens */
+    .landing-section {
+        padding: 60px 5%;
+    }
+}
+
+/* --- Animations --- */
+@keyframes fadeSlideUp {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 1. Define the Animations */
+@keyframes slideDown {
+    0% { opacity: 0; transform: translateY(-30px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideRight {
+    0% { opacity: 0; transform: translateX(-50px); }
+    100% { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideLeft {
+    0% { opacity: 0; transform: translateX(50px); }
+    100% { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fadeUp {
+    0% { opacity: 0; transform: translateY(40px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+/* ANIMATIONS */
+.landing-nav {
+    animation: slideDown 0.8s ease forwards;
+}
+
+.hero-text-section {
+    opacity: 0; /* Starts hidden */
+    animation: slideRight 1s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+    animation-delay: 0.2s;
+}
+
+.hero-form-section {
+    opacity: 0;
+    animation: slideLeft 1s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+    animation-delay: 0.4s;
+}
+
+.feature-card {
+    opacity: 0;
+    animation: fadeUp 1.8s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+}
+
+.features-grid .feature-card:nth-child(1) {
+    animation-delay: 0.6s;
+}
+.features-grid .feature-card:nth-child(2) {
+    animation-delay: 0.8s;
+}
+
+.scroll-hidden {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.8s cubic-bezier(0.25, 0.8, 0.25, 1), 
+                transform 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.scroll-show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.features-grid .feature-card:nth-child(2) {
+    transition-delay: 0.2s;
+}

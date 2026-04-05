@@ -1,0 +1,196 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* Layout */
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(rgba(31, 39, 32, 0.85), rgba(19, 19, 20, 0.95)),
+        url('/static/images/hero-bg.jpg');
+    background-size: cover;
+    color: #e3e3e3;
+    min-height: 100vh;
+}
+
+.tasks-layout {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.tasks-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 20px;
+    border-bottom: 1px solid #333538;
+    background-color: #1e1f20;
+}
+
+.back-btn {
+    color: #c4c7c5;
+    padding: 8px;
+    border-radius: 50%;
+    text-decoration: none;
+}
+.back-btn:hover {
+    background-color: #333538;
+}
+
+.tasks-header h2 {
+    font-size: 15px;
+    font-weight: 500;
+}
+
+/* Main content - centered like settings page */
+.tasks-content {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 20px;
+    overflow-y: auto;
+}
+
+/* Card */
+.tasks-card {
+    width: 100%;
+    max-width: 600px;
+    background-color: #1e1f20;
+    border-radius: 16px;
+    padding: 24px 32px;
+    border: 1px solid #333538;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+}
+
+/* Task Form */
+.task-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 24px;
+    justify-content: center;
+}
+
+.task-form input {
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #333538;
+    background: #131314;
+    color: #e3e3e3;
+    font-size: 14px;
+}
+
+.task-form input::placeholder {
+    color: #a0a0a0;
+}
+
+.task-form input:focus {
+    border-color: #1e5737;
+    outline: none;
+}
+
+.task-form input[type="date"]::-webkit-calendar-picker-indicator,
+.task-form input[type="time"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    cursor: pointer;
+}
+
+.task-form button {
+    padding: 10px 24px;
+    border-radius: 8px;
+    border: none;
+    background-color: white;
+    color: #131314;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.task-form button:hover {
+    background: linear-gradient(90deg, #1e5737, #04a75b);
+    color: white;
+}
+
+#deleteTaskBtn:hover {
+    background: #e63946;
+    color: white;
+}
+
+/* Table */
+.tasks-table-container {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #1e1f20;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    font-size: 14px;
+    border-bottom: 1px solid #333538;
+}
+
+th {
+    background: #131314;
+}
+
+tr:hover {
+    background: #1e5737;
+}
+
+/* Buttons */
+.edit-btn {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 8px;
+    background: #1e5737;
+    color: white;
+    cursor: pointer;
+    font-weight: 500;
+    margin-right: 4px;
+}
+.edit-btn:hover {
+    background: #04a75b;
+}
+
+.delete-btn {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 8px;
+    background: #ff4d4f;
+    color: white;
+    cursor: pointer;
+    font-weight: 500;
+}
+.delete-btn:hover {
+    background: #e63946;
+}
+
+/* Make checkbox column small */
+#tasksTable th:first-child,
+#tasksTable td:first-child {
+    width: 40px;
+    text-align: center;
+}
+
+/* Align everything nicely */
+#tasksTable th,
+#tasksTable td {
+    padding: 10px;
+    text-align: left;
+}
+
+/* Center checkbox perfectly */
+.taskCheckbox,
+#selectAll {
+    cursor: pointer;
+    transform: scale(1.1);
+}
