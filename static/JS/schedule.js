@@ -33,9 +33,17 @@ function populateTimeDropdown(selectElement, startHour = 7, endHour = 21) {
 populateTimeDropdown(startSelect);
 populateTimeDropdown(endSelect);
 
+<<<<<<< HEAD
 function renderSchedule() {
     scheduleTableBody.innerHTML = "";
     
+=======
+// Render Schedule
+function renderSchedule() {
+    scheduleTableBody.innerHTML = "";
+    
+    // Header
+>>>>>>> 3ee73af52ffa456ff5d9f64efa90ef77f55b398b
     scheduleHeaderRow.innerHTML = "";
     if(deleteMode && schedule.length>0){
         const thCheck = document.createElement("th");
@@ -77,6 +85,10 @@ function renderSchedule() {
     });
 }
 
+<<<<<<< HEAD
+=======
+// Add / Update Class
+>>>>>>> 3ee73af52ffa456ff5d9f64efa90ef77f55b398b
 addClassBtn.addEventListener("click",()=>{
     const cls = classInput.value.trim();
     const day = dayInput.value;
@@ -102,6 +114,7 @@ addClassBtn.addEventListener("click",()=>{
     renderSchedule();
 });
 
+// Delete Mode / Delete Selected
 deleteClassBtn.addEventListener("click",()=>{
     if(schedule.length===0) return alert("No classes to delete!");
     const checked = document.querySelectorAll(".taskCheckbox:checked");
@@ -125,6 +138,7 @@ deleteClassBtn.addEventListener("click",()=>{
     }
 });
 
+// Edit class
 function editClass(index){
     const cls = schedule[index];
     classInput.value = cls.className;
@@ -136,6 +150,7 @@ function editClass(index){
     addClassBtn.textContent="Update Class";
 }
 
+// Clear inputs
 function clearInputs(){
     classInput.value="";
     dayInput.value="";
@@ -144,4 +159,5 @@ function clearInputs(){
     locationInput.value="";
 }
 
+// Initial render
 renderSchedule();

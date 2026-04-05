@@ -4,10 +4,11 @@ const dateInput = document.getElementById("dateInput");
 const addTaskBtn = document.getElementById("addTaskBtn");
 const deleteTaskBtn = document.getElementById("deleteTaskBtn");
 
-let tasks = [];
+let tasks = []; // We'll load from DB
 let editIndex = null;
 let deleteMode = false;
 
+// Fetch tasks from backend on page load
 function loadTasks() {
     fetch("/api/tasks", {
         method: "GET",
@@ -21,6 +22,7 @@ function loadTasks() {
     .catch(err => console.error("Failed to load tasks:", err));
 }
 
+// Render tasks
 function renderTasks() {
     const tbody = document.querySelector("#tasksTable tbody");
     const headerRow = document.getElementById("tasksHeaderRow");
@@ -28,22 +30,8 @@ function renderTasks() {
     tbody.innerHTML = "";
     headerRow.innerHTML = "";
 
-    // Select All checkbox in header when in delete mode
     if (deleteMode && tasks.length > 0) {
         const thCheckbox = document.createElement("th");
-        const label = document.createElement("label");
-        label.style.cssText = "display:flex;align-items:center;gap:6px;cursor:pointer;font-size:13px;";
-        const selectAll = document.createElement("input");
-        selectAll.type = "checkbox";
-        selectAll.id = "selectAll";
-        selectAll.addEventListener("change", () => {
-            document.querySelectorAll(".taskCheckbox").forEach(cb => {
-                cb.checked = selectAll.checked;
-            });
-        });
-        label.appendChild(selectAll);
-        label.appendChild(document.createTextNode("All"));
-        thCheckbox.appendChild(label);
         headerRow.appendChild(thCheckbox);
     }
 
@@ -62,28 +50,8 @@ function renderTasks() {
             cb.type = "checkbox";
             cb.classList.add("taskCheckbox");
             cb.dataset.index = index;
-            // Prevent row click from toggling checkbox twice
-            cb.addEventListener("click", e => e.stopPropagation());
             tdCheckbox.appendChild(cb);
             tr.appendChild(tdCheckbox);
-
-            // Clicking the row toggles the checkbox in delete mode
-            tr.addEventListener("click", () => {
-                cb.checked = !cb.checked;
-                // Sync select-all state
-                const all = document.querySelectorAll(".taskCheckbox");
-                const allChecked = [...all].every(c => c.checked);
-                const selectAllCb = document.getElementById("selectAll");
-                if (selectAllCb) selectAllCb.checked = allChecked;
-            });
-        } else {
-            // Edit mode: clicking the row selects it for editing
-            tr.style.cursor = "pointer";
-            tr.addEventListener("click", () => {
-                document.querySelectorAll("#tasksTable tbody tr").forEach(r => r.classList.remove("selected"));
-                tr.classList.add("selected");
-                editTask(index);
-            });
         }
 
         ["text", "time", "date"].forEach(key => {
@@ -92,14 +60,19 @@ function renderTasks() {
             tr.appendChild(td);
         });
 
+        // Row click to edit
+        tr.addEventListener("click", (e) => {
+            if (deleteMode || e.target.type === "checkbox") return;
+            editTask(index);
+            document.querySelectorAll("#tasksTable tbody tr").forEach(r => r.classList.remove("selected"));
+            tr.classList.add("selected");
+        });
+
         tbody.appendChild(tr);
     });
 }
 
 addTaskBtn.addEventListener("click", () => {
-    // Block adding/updating while in delete mode
-    if (deleteMode) return;
-
     const text = taskInput.value.trim();
     const time = timeInput.value;
     const date = dateInput.value;
@@ -119,11 +92,12 @@ addTaskBtn.addEventListener("click", () => {
             credentials: "same-origin"
         })
         .then(res => res.json())
-        .then(() => {
+        .then(data => {
             loadTasks();
             clearInputs();
             addTaskBtn.textContent = "Add Task";
             editIndex = null;
+            deleteMode = false;
         })
         .catch(err => console.error("Task save error:", err));
     };
@@ -143,30 +117,23 @@ addTaskBtn.addEventListener("click", () => {
     }
 });
 
+// Delete button toggles delete mode or deletes selected tasks
 deleteTaskBtn.addEventListener("click", () => {
     if (tasks.length === 0) return alert("No tasks to delete!");
 
     const checked = document.querySelectorAll(".taskCheckbox:checked");
 
     if (!deleteMode) {
-        // Enter delete mode — also cancel any active edit
+        // First click: enter delete mode
         deleteMode = true;
-        editIndex = null;
-        addTaskBtn.textContent = "Add Task";
-        deleteTaskBtn.textContent = "Select to delete";
-        deleteTaskBtn.style.backgroundColor = "#e63946";
-        deleteTaskBtn.style.color = "#fff";
-        clearInputs();
         renderTasks();
     } else {
         if (checked.length === 0) {
-            // Exit delete mode if nothing checked
+            // Second click with no selection: exit delete mode
             deleteMode = false;
-            deleteTaskBtn.textContent = "Delete";
-            deleteTaskBtn.style.backgroundColor = "";
-            deleteTaskBtn.style.color = "";
             renderTasks();
         } else {
+            // Delete selected tasks
             if (confirm("Are you sure you want to delete the selected tasks?")) {
                 const indexes = Array.from(checked).map(cb => parseInt(cb.dataset.index));
                 const tasksToDelete = indexes.map(i => tasks[i]);
@@ -178,35 +145,160 @@ deleteTaskBtn.addEventListener("click", () => {
                     credentials: "same-origin"
                 })
                 .then(res => res.json())
-                .then(() => {
-                    deleteMode = false;
-                    deleteTaskBtn.textContent = "Delete";
-                    deleteTaskBtn.style.backgroundColor = "";
-                    deleteTaskBtn.style.color = "";
-                    loadTasks();
-                })
+                .then(() => loadTasks())
                 .catch(err => console.error("Delete error:", err));
             }
         }
     }
 });
 
+// Edit task
 function editTask(index) {
-    // Only allow editing when not in delete mode
-    if (deleteMode) return;
-
     const task = tasks[index];
     taskInput.value = task.text;
-    timeInput.value = task.time === "Not set" ? "" : task.time;
-    dateInput.value = task.date === "Not set" ? "" : task.date;
+    timeInput.value = task.time;
+    dateInput.value = task.date;
     editIndex = index;
     addTaskBtn.textContent = "Update Task";
 }
 
+// Clear inputs
 function clearInputs() {
     taskInput.value = "";
     timeInput.value = "";
     dateInput.value = "";
 }
 
+function addReminderToTask(taskText, taskTime, taskDate) {
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay';
+    modal.style.display = 'flex';
+    modal.innerHTML = `
+        <div class="modal-card">
+            <div class="modal-header">
+                <span class="material-symbols-rounded">notification_add</span>
+                <h3>Add Reminder</h3>
+            </div>
+            <div class="modal-body">
+                <p style="margin-bottom: 16px; color: #a0a0a0;">Remind me about: <strong style="color: #e3e3e3;">${taskText}</strong></p>
+                <div class="reminder-presets">
+                    <button class="reminder-preset-btn" onclick="setTaskReminder('${taskText}', '${taskTime}', '${taskDate}', 1, 'day')">1 day before</button>
+                    <button class="reminder-preset-btn" onclick="setTaskReminder('${taskText}', '${taskTime}', '${taskDate}', 2, 'day')">2 days before</button>
+                    <button class="reminder-preset-btn" onclick="setTaskReminder('${taskText}', '${taskTime}', '${taskDate}', 1, 'week')">1 week before</button>
+                    <button class="reminder-preset-btn" onclick="setTaskReminder('${taskText}', '${taskTime}', '${taskDate}', 1, 'hour')">1 hour before</button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="cancel-modal-btn" onclick="this.closest('.modal-overlay').remove()">Cancel</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+}
+
+function setTaskReminder(taskText, taskTime, taskDate, amount, unit) {
+    // Calculate reminder time
+    const taskDateTime = new Date(`${taskDate}T${taskTime}`);
+    let reminderTime;
+    
+    switch(unit) {
+        case 'day':
+            reminderTime = new Date(taskDateTime.getTime() - (amount * 24 * 60 * 60 * 1000));
+            break;
+        case 'week':
+            reminderTime = new Date(taskDateTime.getTime() - (amount * 7 * 24 * 60 * 60 * 1000));
+            break;
+        case 'hour':
+            reminderTime = new Date(taskDateTime.getTime() - (amount * 60 * 60 * 1000));
+            break;
+    }
+    
+    const sourceId = `${taskText}_${taskDate}_${taskTime}`;
+    
+    fetch('/api/reminders/add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
+        body: JSON.stringify({
+            source_type: 'task',
+            source_id: sourceId,
+            reminder_time: reminderTime.toISOString(),
+            reminder_note: `${amount} ${unit}${amount > 1 ? 's' : ''} before deadline`
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            alert('Reminder added!');
+            document.querySelector('.modal-overlay').remove();
+        }
+    })
+    .catch(err => console.error('Reminder error:', err));
+}
+
+// Modify renderTasks to add reminder button
+function renderTasks() {
+    const tbody = document.querySelector("#tasksTable tbody");
+    const headerRow = document.getElementById("tasksHeaderRow");
+
+    tbody.innerHTML = "";
+    headerRow.innerHTML = "";
+
+    if (deleteMode && tasks.length > 0) {
+        const thCheckbox = document.createElement("th");
+        headerRow.appendChild(thCheckbox);
+    }
+
+    ["Task", "Time", "Date", ""].forEach(text => {  // Added empty header for actions
+        const th = document.createElement("th");
+        th.textContent = text;
+        headerRow.appendChild(th);
+    });
+
+    tasks.forEach((task, index) => {
+        const tr = document.createElement("tr");
+
+        if (deleteMode) {
+            const tdCheckbox = document.createElement("td");
+            const cb = document.createElement("input");
+            cb.type = "checkbox";
+            cb.classList.add("taskCheckbox");
+            cb.dataset.index = index;
+            tdCheckbox.appendChild(cb);
+            tr.appendChild(tdCheckbox);
+        }
+
+        ["text", "time", "date"].forEach(key => {
+            const td = document.createElement("td");
+            td.textContent = task[key];
+            tr.appendChild(td);
+        });
+
+        // Add reminder button column
+        const tdActions = document.createElement("td");
+        const reminderBtn = document.createElement("button");
+        reminderBtn.className = "reminder-btn";
+        reminderBtn.innerHTML = '<span class="material-symbols-rounded">notifications</span>';
+        reminderBtn.onclick = (e) => {
+            e.stopPropagation();
+            addReminderToTask(task.text, task.time, task.date);
+        };
+        tdActions.appendChild(reminderBtn);
+        tr.appendChild(tdActions);
+
+        // Row click to edit
+        tr.addEventListener("click", (e) => {
+            if (deleteMode || e.target.type === "checkbox" || e.target.closest('.reminder-btn')) return;
+            editTask(index);
+            document.querySelectorAll("#tasksTable tbody tr").forEach(r => r.classList.remove("selected"));
+            tr.classList.add("selected");
+        });
+
+        tbody.appendChild(tr);
+    });
+}
+
+
+// Initial load
 loadTasks();
+

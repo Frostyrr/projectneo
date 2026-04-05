@@ -3,14 +3,8 @@ import json
 import dateparser
 from datetime import datetime
 import uuid
-import pytz
 
-ph_tz = pytz.timezone("Asia/Manila")
-now_ph = datetime.now(ph_tz)
-
-SYSTEM_PROMPT = f"""You are NEO, a personal AI assistant designed to help the user manage tasks, schedules, and daily activities.
-
-Current date and time in the Philippines: {now_ph.strftime("%A, %B %d, %Y %I:%M %p")} (PHT)
+SYSTEM_PROMPT = """You are NEO, a personal AI assistant designed to help the user manage tasks, schedules, and daily activities.
 
 Responsibilities:
 - Help the user create, organize, and track tasks and schedules
@@ -34,14 +28,8 @@ def parse_natural_time(time_str):
     Convert natural language time/date into HH:MM:SS and YYYY-MM-DD.
     Returns "Not set" if parsing fails.
     """
-    ph_tz = pytz.timezone("Asia/Manila")
-    dt = dateparser.parse(time_str, settings={
-        "TIMEZONE": "Asia/Manila",
-        "RETURN_AS_TIMEZONE_AWARE": True,
-        "PREFER_DAY_OF_MONTH": "first"
-    })
+    dt = dateparser.parse(time_str)
     if dt:
-        dt = dt.astimezone(ph_tz)
         return dt.strftime("%H:%M:%S"), dt.strftime("%Y-%m-%d")
     return "Not set", "Not set"
 
@@ -131,8 +119,7 @@ class NeoAssistant:
     }
     Rules:
     - Remove filler words like 'I have a task', 'Hey AI', 'can you', etc.
-    - If the message is just saying they have a task with NO subject (e.g. 'i have a task', 'add a task', 'i have an assignment'), return "task": ""
-    - A valid task must have a concrete subject like 'math homework', 'doctor appointment', 'buy groceries'
+    - If no concrete task is present (e.g. just "i have a task" with no subject), return "task": ""
     - If time/date missing → "Not set"
     - Do NOT return explanations, markdown, or backticks
     """
@@ -149,6 +136,7 @@ class NeoAssistant:
             parsed["time"] = parsed.get("time", "Not set")
             parsed["date"] = parsed.get("date", "Not set")
     
+            # ✅ If task is empty, don't fallback to raw message — return empty
             if not task_text:
                 parsed["task"] = ""
     
@@ -191,40 +179,3 @@ class NeoAssistant:
         except Exception as e:
             print("Vision API Error:", e)
             raise e
-    def parse_task_update_with_ai(self, message, existing_tasks):
-        task_list_str = "\n".join(
-            [f"- ID: {t['id']}, Text: {t['text']}, Time: {t['time']}, Date: {t['date']}" for t in existing_tasks]
-        )
-    
-        messages = [
-            {
-                "role": "system",
-                "content": f"""You help update tasks in a task manager.
-    
-    Here are the user's current tasks:
-    {task_list_str}
-    
-    Extract what the user wants to change. Return ONLY valid JSON, no markdown, no backticks:
-    {{
-      "task_id": <integer id of the matched task or null>,
-      "updates": {{
-        "text": "new name or null",
-        "time": "HH:MM:SS or null",
-        "date": "YYYY-MM-DD or null"
-      }}
-    }}
-    Only include fields the user wants to change. Use null for unchanged fields.
-    """
-            },
-            {"role": "user", "content": message}
-        ]
-    
-        try:
-            reply = self.call_groq(messages)
-            reply = reply.strip().removeprefix("```json").removeprefix("```").removesuffix("```").strip()
-            parsed = json.loads(reply)
-            parsed["updates"] = {k: v for k, v in parsed.get("updates", {}).items() if v is not None}
-            return parsed
-        except Exception as e:
-            print("AI UPDATE PARSE ERROR:", e)
-            return {"task_id": None, "updates": {}}

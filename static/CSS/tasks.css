@@ -113,11 +113,6 @@ body {
     color: white;
 }
 
-#deleteTaskBtn:hover {
-    background: #e63946;
-    color: white;
-}
-
 /* Table */
 .tasks-table-container {
     overflow-x: auto;
@@ -193,4 +188,64 @@ tr:hover {
 #selectAll {
     cursor: pointer;
     transform: scale(1.1);
+}
+
+/* Reminder Button in Tasks Table */
+.reminder-btn {
+    background: transparent;
+    border: 1px solid #1e5737;
+    color: #1e5737;
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    transition: all 0.2s;
+}
+
+.reminder-btn:hover {
+    background: #1e5737;
+    color: white;
+}
+
+.reminder-btn .material-symbols-rounded {
+    font-size: 18px;
+}
+
+/* Modal Styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.6);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    backdrop-filter: blur(4px);
+}
+
+.reminder-presets {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.reminder-preset-btn {
+    padding: 12px;
+    background: #131314;
+    border: 1px solid #333538;
+    color: #e3e3e3;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.reminder-preset-btn:hover {
+    background: #1e5737;
+    border-color: #1e5737;
 }

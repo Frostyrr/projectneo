@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reminders - Neo</title>
+
+<link rel="icon" type="image/x-icon" href="/static/images/singleNEO.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded" />
+<link rel="stylesheet" href="/static/CSS/reminders.css">
+</head>
+
+<body>
+<div class="reminders-layout">
+
+    <!-- HEADER -->
+    <header class="reminders-header">
+        <a href="/chat" class="back-btn" title="Back to Chat">
+            <span class="material-symbols-rounded">arrow_back</span>
+        </a>
+        <h2>Reminders</h2>
+        <div class="header-actions">
+            <span class="reminder-count" id="reminderCount">0 upcoming</span>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="reminders-content">
+
+        <!-- EMPTY STATE -->
+        <div class="empty-state" id="emptyState">
+            <span class="material-symbols-rounded empty-icon">notifications_off</span>
+            <h3>No Reminders Set</h3>
+            <p>Add reminders to your tasks or classes to get notified</p>
+        </div>
+
+        <!-- UPCOMING -->
+        <div class="reminders-section">
+            <h3 class="section-title">Upcoming</h3>
+            <div id="upcomingContainer"></div>
+        </div>
+
+        <!-- LATER THIS WEEK -->
+        <div class="reminders-section">
+            <h3 class="section-title">Later This Week</h3>
+            <div id="laterContainer"></div>
+        </div>
+
+        <!-- COMPLETED -->
+        <div class="reminders-section completed-section">
+            <div class="section-header-toggle" onclick="toggleCompleted()">
+                <h3 class="section-title">Completed</h3>
+                <span class="material-symbols-rounded toggle-icon">expand_more</span>
+            </div>
+            <div class="completed-reminders" id="completedContainer" style="display: none;"></div>
+        </div>
+
+    </main>
+</div>
+
+<!-- SNOOZE MODAL -->
+<div id="snoozeModal" class="modal-overlay hidden">
+    <div class="modal-card">
+        <div class="modal-header">
+            <span class="material-symbols-rounded">snooze</span>
+            <h3>Snooze Reminder</h3>
+        </div>
+
+        <div class="modal-body">
+            <div class="snooze-options">
+                <button class="snooze-option" data-time="5">5 minutes</button>
+                <button class="snooze-option" data-time="15">15 minutes</button>
+                <button class="snooze-option" data-time="30">30 minutes</button>
+                <button class="snooze-option" data-time="60">1 hour</button>
+                <button class="snooze-option" data-time="tomorrow">Tomorrow morning</button>
+                <button class="snooze-option" data-time="custom">Custom...</button>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" class="cancel-modal-btn">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<script src="/static/JS/reminders.js"></script>
+
+</body>
+</html>

@@ -149,43 +149,6 @@ class NeoApp {
                 this.ui.appendMessage(`❌ Analysis Failed: ${responseData.error}`, "bot");
             }
 
-            // Render task selection buttons if backend returned a task list
-            if (responseData.task_list) {
-                const btnContainer = document.createElement("div");
-                btnContainer.style.cssText = "display:flex; flex-direction:column; gap:8px; margin-top:8px;";
-            
-                responseData.task_list.forEach(task => {
-                    const btn = document.createElement("button");
-                    btn.textContent = `${task.text} — ${task.date} ${task.time}`;
-                    btn.style.cssText = "padding:8px 12px; border-radius:8px; border:1px solid #ccc; background:#f0f0f0; cursor:pointer; text-align:left;";
-                    btn.onclick = async () => {
-                        btnContainer.remove();
-                        this.ui.appendMessage(btn.textContent, "user");
-                    
-                        const res = await fetch("/api/chat/select-task", {
-                            method: "POST",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({ task_id: task.id, chat_id: this.currentChatId })
-                        });
-                        let data;
-
-                            try {
-                                data = await res.json();
-                            } catch (e) {
-                                const text = await res.text();
-                                console.error("Server returned HTML:", text);
-                                throw new Error("Invalid JSON response");
-                            }
-                    };
-                    btnContainer.appendChild(btn);
-                });
-            
-                this.ui.chatBox.appendChild(btnContainer);
-                if (this.ui.chatBox) {
-                    this.ui.chatBox.scrollTop = this.ui.chatBox.scrollHeight;
-                }
-            }
-
         } catch (error) {
             console.error("Send Message Error:", error);
             this.ui.appendMessage(`❌ Critical Error: ${error.message}`, "bot");

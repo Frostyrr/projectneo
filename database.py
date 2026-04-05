@@ -16,7 +16,7 @@ class Database:
 
     def create_user(self, username, email, password):
         if self.users.find_one({"username": username}):
-            return False
+            return False # User exists
         self.users.insert_one({
             "username": username,
             "email": email,
@@ -42,13 +42,17 @@ class Database:
                 update_fields["password"] = generate_password_hash(new_password)
             
             if update_fields:
+                # FIX: Moved the closing parenthesis to the end of the line
                 self.users.update_one({"username": username}, {"$set": update_fields})
                 return True
             return False
     
     def delete_user(self, username):
+        # Delete the user's account
         self.users.delete_one({"username": username})
+        # Delete associated chat history
         self.chat_history.delete_one({"username": username})
+        # Delete associated reminders
         self.reminders.delete_many({"username": username})
         return True
 
@@ -120,39 +124,26 @@ class Database:
     def verify_otp(self, email, otp):
         record = self.otps.find_one({"email": email, "otp": otp})
         if record and record["expire_at"] > datetime.utcnow():
-            self.otps.delete_one({"email": email})
+            self.otps.delete_one({"email": email})  # remove used OTP
             return True
         return False
     
     def save_task(self, username, text, time, date):
         try:
             self.tasks.insert_one({
-                "id": str(uuid.uuid4()),  # ✅ ADD THIS
                 "username": username,
                 "text": text,
                 "time": time,
                 "date": date,
                 "created_at": datetime.utcnow()
             })
+            print(f"Task saved: {text} at {date} {time}")
         except Exception as e:
             print("DB insert error:", e)
         
     def get_tasks(self, username):
-        tasks = list(self.tasks.find({"username": username}))
-        
-        for t in tasks:
-            t["id"] = str(t.get("id", t["_id"]))  # ✅ fallback to Mongo _id
-            if "_id" in t:
-                del t["_id"]
-        
+        tasks = list(self.tasks.find({"username": username}, {"_id": 0}))
         return tasks
-        
-    def update_task(self, username, task_id, updates):
-        result = self.tasks.update_one(
-            {"username": username, "id": task_id},
-            {"$set": updates}
-        )
-        return result.modified_count > 0
     
     def delete_task(self, username, text, time, date):
         self.tasks.delete_one({
@@ -171,4 +162,59 @@ class Database:
                 "date": task["date"]
             })
 
-        
+        # Add these methods to your Database class
+
+    def save_reminder(self, username, source_type, source_id, reminder_time, reminder_note):
+        """Save a reminder linked to a task or class"""
+        self.reminders.insert_one({
+            "username": username,
+            "source_type": source_type,  # 'task' or 'class'
+            "source_id": source_id,  # unique identifier
+            "reminder_time": reminder_time,
+            "reminder_note": reminder_note,
+            "is_completed": False,
+            "is_dismissed": False,
+            "created_at": datetime.utcnow()
+        })
+
+    def get_reminders(self, username):
+        """Get all active reminders for a user"""
+        reminders = list(self.reminders.find({
+            "username": username,
+            "is_dismissed": False
+        }).sort("reminder_time", 1))
+
+        # Convert ObjectId to string for JSON serialization
+        for reminder in reminders:
+            reminder["_id"] = str(reminder["_id"])
+
+        return reminders
+
+    def update_reminder(self, reminder_id, **kwargs):
+        """Update reminder fields (snooze, complete, dismiss)"""
+        from bson.objectid import ObjectId
+        self.reminders.update_one(
+            {"_id": ObjectId(reminder_id)},
+            {"$set": kwargs}
+        )
+
+    def delete_reminder(self, reminder_id):
+        """Delete a specific reminder"""
+        from bson.objectid import ObjectId
+        self.reminders.delete_one({"_id": ObjectId(reminder_id)})
+
+    def get_task_reminders(self, username, task_text, task_date, task_time):
+        """Get reminders for a specific task"""
+        return list(self.reminders.find({
+            "username": username,
+            "source_type": "task",
+            "source_id": f"{task_text}_{task_date}_{task_time}"
+        }))
+
+    def get_class_reminders(self, username, class_name, day, start_time):
+        """Get reminders for a specific class"""
+        return list(self.reminders.find({
+            "username": username,
+            "source_type": "class",
+            "source_id": f"{class_name}_{day}_{start_time}"
+        }))

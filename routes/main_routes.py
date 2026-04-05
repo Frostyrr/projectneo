@@ -19,3 +19,4 @@ def schedule():
     if "user" not in session:
         return redirect(url_for("auth.login"))
     return render_template("schedule.html")
+

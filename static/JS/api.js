@@ -39,26 +39,10 @@ class ApiService {
     }
 
     static async sendTextMessage(message, chatId) {
-        const now = new Date();
-        const clientDatetime = now.toLocaleString("en-US", {
-            timeZone: "Asia/Manila",
-            weekday: "long",
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-            hour12: true
-        });
-    
         const response = await fetch("/api/chat", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ 
-                message, 
-                chat_id: chatId,
-                client_datetime: clientDatetime
-            })
+            body: JSON.stringify({ message, chat_id: chatId })
         });
         return response.json();
     }
