@@ -20,8 +20,32 @@ class NeoApp {
     bindEvents() {
         // Sending Messages
         this.sendBtn.addEventListener("click", () => this.handleSendMessage());
-        this.ui.userInput.addEventListener("keypress", (e) => {
-            if (e.key === "Enter") this.handleSendMessage();
+        
+        // UPDATE: Check for Shift key and prevent default enter behavior
+        this.ui.userInput.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault(); // Prevents adding a new line
+                this.handleSendMessage();
+            }
+        });
+
+        this.ui.userInput.addEventListener("input", function() {
+            // Reset height first to recalculate shrinking if user deletes text
+            this.style.height = "44px"; 
+            this.style.height = this.scrollHeight + "px";
+            
+            // Show scrollbar ONLY if we hit the max height limit (e.g., 200px)
+            if (this.scrollHeight >= 200) {
+                this.style.overflowY = "auto";
+            } else {
+                this.style.overflowY = "hidden";
+            }
+        });
+
+        // Auto-resize textarea
+        this.ui.userInput.addEventListener("input", function () {
+            this.style.height = "auto";
+            this.style.height = this.scrollHeight + "px";
         });
 
         // New Chat Button

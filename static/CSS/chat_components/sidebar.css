@@ -52,6 +52,24 @@
     overflow-y: auto;
 }
 
+/* --- Custom Scrollbar for Recent Chats --- */
+.sidebar-middle::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sidebar-middle::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.sidebar-middle::-webkit-scrollbar-thumb {
+    background: #444;
+    border-radius: 10px;
+}
+
+.sidebar-middle::-webkit-scrollbar-thumb:hover {
+    background: #666;
+}
+
 .recent-title {
     font-size: 13px;
     color: #c4c7c5;

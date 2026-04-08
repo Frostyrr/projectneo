@@ -1,4 +1,6 @@
 const micBtn = document.getElementById("mic-btn");
+const userInput = document.getElementById("user-input");
+
 let isRecording = false;
 let finalTranscript = "";
 let recognition = null;
@@ -42,7 +44,7 @@ if (SpeechRecognition) {
                 startRecognition();
             } else {
                 if (userInput.value.trim() !== "") {
-                    sendMessage();
+                    window.neoApp.handleSendMessage();
                 }
             }
         };
@@ -64,7 +66,7 @@ if (SpeechRecognition) {
             }
             stopUI();
             if (userInput.value.trim() !== "") {
-                sendMessage();
+                window.neoApp.handleSendMessage();
             }
         } else {
             isRecording = true;

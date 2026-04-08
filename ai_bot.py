@@ -96,10 +96,24 @@ class NeoAssistant:
             # --- NORMAL CHAT FLOW ---
             full_messages = db.load_chat(chat_id)
             
+            # NEW: Fetch actual tasks from MongoDB so the AI stops guessing
+            user_tasks = db.get_tasks(username)
+            if user_tasks:
+                task_list = "\n".join([f"- {t['text']} (Due: {t['date']} at {t['time']})" for t in user_tasks])
+            else:
+                task_list = "No pending tasks."
+
+            # Append the real data to the system prompt
+            dynamic_system_prompt = SYSTEM_PROMPT + f"\n\n## Current User Data:\nTasks:\n{task_list}"
+            
             # Create a context window for the AI (only the last 10 messages)
             context = full_messages[-10:] if len(full_messages) > 10 else full_messages.copy()
+            
+            # Inject or Update the dynamic system prompt
             if not context or context[0].get("role") != "system":
-                context.insert(0, {"role": "system", "content": SYSTEM_PROMPT})
+                context.insert(0, {"role": "system", "content": dynamic_system_prompt})
+            else:
+                context[0]["content"] = dynamic_system_prompt
     
             context.append({"role": "user", "content": user_input})
             reply = self.call_groq(context)

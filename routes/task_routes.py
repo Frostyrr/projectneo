@@ -5,7 +5,8 @@ task_bp = Blueprint('tasks', __name__)
 
 @task_bp.route("/tasks")
 def tasks_page():
-    if "user" not in session: return redirect('/login')
+    if "user" not in session:
+        return redirect('/login')
     return render_template("task.html")
 
 @task_bp.route("/api/tasks", methods=["POST"])

@@ -130,6 +130,8 @@ class UIManager {
 
     resetInputUI() {
         this.userInput.value = "";
+        this.userInput.style.height = "44px";      // Shrink back to default height
+        this.userInput.style.overflowY = "hidden"; // Hide scrollbar again
         this.userInput.placeholder = "Ask Neo...";
         
         const previewContainer = document.getElementById("image-preview-container");

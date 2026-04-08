@@ -1,6 +1,9 @@
 /* ---------------- INPUT AREA ---------------- */
 .input-wrapper {
-    padding: 0 15% 20px 15%;
+    padding: 0 20px 20px 20px;
+    max-width: 900px;      
+    margin: 0 auto; 
+    width: 100%;
 }
 
 .input-container {
@@ -14,14 +17,27 @@
 }
 
 #user-input {
-    flex: 1;
+flex: 1;
     background: none;
     border: none;
     color: #e3e3e3;
     font-size: 16px;
     outline: none;
-    padding: 6px 0;
+    padding: 10px 0;           /* Better vertical alignment */
     font-family: inherit;
+    resize: none;
+    line-height: 1.5;
+    height: 44px;              /* Base height */
+    max-height: 200px;         /* Max height before scrolling starts */
+    overflow-y: hidden;        /* Hide default scrollbar */
+}
+
+#user-input::-webkit-scrollbar {
+    width: 6px;
+}
+#user-input::-webkit-scrollbar-thumb {
+    background-color: #333538;
+    border-radius: 10px;
 }
 
 .send-icon-btn {
