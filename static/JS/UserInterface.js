@@ -31,6 +31,7 @@ class UIManager {
         this.initLightbox();
         this.initGlobalClick(); 
         this.initSettingsModal();
+        this.initSettingsForm();
     }
 
     // --- Global Click Listener (Closes open menus) ---
@@ -165,7 +166,162 @@ class UIManager {
                 document.getElementById(targetId).classList.remove("hidden");
             });
         });
+
+        // --- 4. User Settings Update & OTP Logic ---
+        const settingsForm = document.getElementById("settings-update-form");
+        const otpSection = document.getElementById("settings-otp-section");
+        const otpForm = document.getElementById("settings-otp-form");
+        const cancelOtpBtn = document.getElementById("cancel-otp-btn");
+
+        if (settingsForm) {
+            settingsForm.addEventListener("submit", async (e) => {
+                e.preventDefault(); 
+                
+                const msgDiv = document.getElementById("settings-message");
+                const saveBtn = document.getElementById("settings-save-btn");
+                
+                msgDiv.textContent = "Updating...";
+                msgDiv.style.color = "#a0a0a0";
+                saveBtn.disabled = true;
+
+                const email = document.getElementById("settings-email").value;
+                const current_password = document.getElementById("settings-current-password").value;
+                const new_password = document.getElementById("settings-new-password").value;
+                const confirm_password = document.getElementById("settings-confirm-password").value;
+
+                try {
+                    const response = await fetch("/api/user/settings", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ email, current_password, new_password, confirm_password })
+                    });
+                    
+                    const data = await response.json();
+                    saveBtn.disabled = false;
+                    
+                    if (response.ok) {
+                        msgDiv.textContent = data.message || "Settings updated.";
+                        msgDiv.style.color = "#4ade96"; 
+                        
+                        // Clear password fields
+                        document.getElementById("settings-current-password").value = "";
+                        document.getElementById("settings-new-password").value = "";
+                        document.getElementById("settings-confirm-password").value = "";
+
+                        // If email changed, backend tells us to show OTP field
+                        if (data.require_otp) {
+                            settingsForm.classList.add("hidden");
+                            otpSection.classList.remove("hidden");
+                            document.getElementById("otp-instruction-text").textContent = `Enter the 6-digit code sent to ${data.pending_email}`;
+                        }
+                    } else {
+                        msgDiv.textContent = data.error;
+                        msgDiv.style.color = "#ff6b6d"; 
+                    }
+                } catch (err) {
+                    msgDiv.textContent = "A network error occurred.";
+                    msgDiv.style.color = "#ff6b6d";
+                    saveBtn.disabled = false;
+                }
+            });
+        }
+
+        if (otpForm) {
+            otpForm.addEventListener("submit", async (e) => {
+                e.preventDefault();
+                
+                const otpMsg = document.getElementById("otp-message");
+                const verifyBtn = document.getElementById("verify-otp-btn");
+                const otp = document.getElementById("settings-otp-input").value;
+
+                otpMsg.textContent = "Verifying...";
+                otpMsg.style.color = "#a0a0a0";
+                verifyBtn.disabled = true;
+
+                try {
+                    const response = await fetch("/api/user/verify-email-change", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ otp })
+                    });
+                    
+                    const data = await response.json();
+                    verifyBtn.disabled = false;
+
+                    if (response.ok) {
+                        // Success! Return to main form
+                        document.getElementById("settings-otp-input").value = "";
+                        otpSection.classList.add("hidden");
+                        settingsForm.classList.remove("hidden");
+                        
+                        const mainMsg = document.getElementById("settings-message");
+                        mainMsg.textContent = "Email updated successfully!";
+                        mainMsg.style.color = "#4ade96";
+                    } else {
+                        otpMsg.textContent = data.error;
+                        otpMsg.style.color = "#ff6b6d";
+                    }
+                } catch (err) {
+                    otpMsg.textContent = "A network error occurred.";
+                    otpMsg.style.color = "#ff6b6d";
+                    verifyBtn.disabled = false;
+                }
+            });
+        }
+
+        if (cancelOtpBtn) {
+            cancelOtpBtn.addEventListener("click", () => {
+                otpSection.classList.add("hidden");
+                settingsForm.classList.remove("hidden");
+                document.getElementById("settings-message").textContent = "Email change cancelled.";
+                document.getElementById("settings-message").style.color = "#a0a0a0";
+            });
+        }
     }
+
+    initSettingsForm() {
+    const settingsForm = document.getElementById("settings-update-form");
+    if (settingsForm) {
+        settingsForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const msgDiv = document.getElementById("settings-message");
+            msgDiv.textContent = "Updating...";
+            msgDiv.style.color = "#a0a0a0";
+
+            const email = document.getElementById("settings-email").value;
+            const current_password = document.getElementById("settings-current-password").value;
+            const new_password = document.getElementById("settings-new-password").value;
+            const confirm_password = document.getElementById("settings-confirm-password").value;
+
+            try {
+                const response = await fetch("/api/user/settings", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email, current_password, new_password, confirm_password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    msgDiv.textContent = data.success;
+                    msgDiv.style.color = "#4ade96";
+
+                    document.getElementById("settings-current-password").value = "";
+                    document.getElementById("settings-new-password").value = "";
+                    document.getElementById("settings-confirm-password").value = "";
+                } else {
+                    msgDiv.textContent = data.error;
+                    msgDiv.style.color = "#ff6b6d";
+                }
+
+            } catch (err) {
+                msgDiv.textContent = "A network error occurred.";
+                msgDiv.style.color = "#ff6b6d";
+            }
+        });
+    }
+}
 
     // --- UI State Helpers ---
     clearChatBox() {
@@ -340,4 +496,6 @@ class UIManager {
         // Auto-scroll to bottom
         this.chatBox.scrollTop = this.chatBox.scrollHeight;
     }
+
+    
 }

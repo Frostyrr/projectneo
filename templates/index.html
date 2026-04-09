@@ -148,19 +148,16 @@
     <!-- SETTINGS OVERLAY -->
     <div id="settings-modal-overlay" class="neo-settings-overlay hidden">
         <div class="neo-settings-modal">
-            
+
             <div class="neo-settings-sidebar">
                 <ul class="settings-nav">
                     <li class="settings-nav-item active" data-target="section-my-account">
                         <span class="material-symbols-rounded">person</span> Account
                     </li>
-
                     <li class="settings-nav-item" data-target="section-notifications">
                         <span class="material-symbols-rounded">notifications</span> Notifications
                     </li>
-
                     <div class="settings-divider"></div>
-
                     <li class="settings-nav-item danger" data-target="section-danger-zone">
                         <span class="material-symbols-rounded">warning</span> Danger Zone
                     </li>
@@ -181,176 +178,130 @@
                         <h2>Account Settings</h2>
 
                         <div class="setting-row profile-row">
-
                             <div class="avatar-circle">
                                 <span class="material-symbols-rounded">person</span>
                             </div>
-
                             <div class="profile-info">
                                 <h3>{{ session.get('user', 'User') }}</h3>
                                 <p>Personal Account</p>
                             </div>
-
                         </div>
 
                         <div class="setting-divider"></div>
 
-                        <form class="settings-form" action="/settings" method="POST">
+                        <form class="settings-form" id="settings-update-form">
+
+                            <div id="settings-message" style="margin-bottom: 16px; font-size: 13.5px; font-weight: 500;"></div>
 
                             <div class="setting-row input-row">
                                 <label for="settings-email">Email Address</label>
-
-                                <input
-                                    type="email"
-                                    id="settings-email"
-                                    name="email"
-                                    value="{{ email }}"
-                                    placeholder="Update your email">
+                                <input type="email" id="settings-email" name="email" value="{{ email }}" placeholder="Update your email">
                             </div>
 
                             <div class="setting-divider"></div>
 
                             <div class="setting-row input-row">
-
                                 <div class="label-with-desc">
-                                    <label for="settings-current-password">
-                                        Current Password
-                                    </label>
-
-                                    <p class="section-desc">
-                                        Required to set a new password.
-                                    </p>
+                                    <label for="settings-current-password">Current Password</label>
+                                    <p class="section-desc">Required to set a new password.</p>
                                 </div>
-
-                                <input
-                                    type="password"
-                                    id="settings-current-password"
-                                    name="current_password"
-                                    placeholder="Enter current password">
-
+                                <input type="password" id="settings-current-password" name="current_password" placeholder="Enter current password">
                             </div>
 
                             <div class="setting-row input-row">
-
-                                <label for="settings-new-password">
-                                    New Password
-                                </label>
-
-                                <input
-                                    type="password"
-                                    id="settings-new-password"
-                                    name="new_password"
-                                    placeholder="Enter a new password">
-
+                                <label for="settings-new-password">New Password</label>
+                                <input type="password" id="settings-new-password" name="new_password" placeholder="Enter a new password">
                             </div>
 
                             <div class="setting-row input-row">
-
-                                <label for="settings-confirm-password">
-                                    Confirm Password
-                                </label>
-
-                                <input
-                                    type="password"
-                                    id="settings-confirm-password"
-                                    name="confirm_password"
-                                    placeholder="Confirm new password">
-
+                                <label for="settings-confirm-password">Confirm Password</label>
+                                <input type="password" id="settings-confirm-password" name="confirm_password" placeholder="Confirm new password">
                             </div>
 
                             <div class="form-actions">
-                                <button type="submit" class="save-btn">
-                                    Save Changes
-                                </button>
+                                <button type="submit" class="save-btn" id="settings-save-btn">Save Changes</button>
                             </div>
 
                         </form>
 
+                        <div id="settings-otp-section" class="hidden" style="margin-top: 20px; padding: 20px; background: rgba(30, 130, 80, 0.1); border: 1px solid rgba(74, 222, 150, 0.3); border-radius: 12px;">
+                            <h3 style="margin-bottom: 5px; color: #4ade96; font-size: 15px;">Verify New Email</h3>
+                            <p class="section-desc" id="otp-instruction-text" style="color: #e8eaed; margin-bottom: 15px;">Enter the 6-digit code sent to your new email.</p>
+
+                            <div id="otp-message" style="margin-bottom: 10px; font-size: 13.5px; font-weight: 500;"></div>
+
+                            <form id="settings-otp-form" style="display: flex; gap: 10px;">
+                                <input type="text" id="settings-otp-input" placeholder="Enter 6-digit OTP" required pattern="\d{6}" style="flex: 1; background: #111213; border: 1px solid rgba(255,255,255,0.07); color: #e8eaed; padding: 10px 14px; border-radius: 10px; outline: none;">
+                                <button type="submit" class="save-btn" id="verify-otp-btn">Verify</button>
+                            </form>
+
+                            <button id="cancel-otp-btn" style="margin-top: 15px; background: transparent; border: none; color: #a0a0a0; font-size: 13px; text-decoration: underline; cursor: pointer;">Cancel Email Change</button>
+                        </div>
+
                     </div>
+                    <!-- END ACCOUNT -->
 
                     <!-- NOTIFICATIONS -->
                     <div id="section-notifications" class="settings-section hidden">
 
                         <h2>Notifications</h2>
 
-                        <div class="setting-row toggle-row">
-
+                        <div class="toggle-row">
                             <div class="toggle-info">
                                 <h4>Desktop Notifications</h4>
-
-                                <p>
-                                    Receive alerts even when Neo is in the background.
-                                </p>
+                                <p>Receive alerts even when Neo is in the background.</p>
                             </div>
-
                             <label class="switch">
                                 <input type="checkbox" checked>
                                 <span class="slider round"></span>
                             </label>
-
                         </div>
 
                         <div class="setting-divider"></div>
 
-                        <div class="setting-row toggle-row">
-
+                        <div class="toggle-row">
                             <div class="toggle-info">
                                 <h4>Sound Alerts</h4>
-
-                                <p>
-                                    Play a gentle sound when a reminder is due.
-                                </p>
+                                <p>Play a gentle sound when a reminder is due.</p>
                             </div>
-
                             <label class="switch">
                                 <input type="checkbox" checked>
                                 <span class="slider round"></span>
                             </label>
-
                         </div>
 
                     </div>
+                    <!-- END NOTIFICATIONS -->
 
                     <!-- DANGER ZONE -->
                     <div id="section-danger-zone" class="settings-section hidden">
 
-                        <h2 class="danger-title">
-                            Danger Zone
-                        </h2>
+                        <h2 class="danger-title">Danger Zone</h2>
 
-                        <div class="setting-row toggle-row">
-
+                        <div class="toggle-row">
                             <div class="toggle-info">
                                 <h4>Delete Account</h4>
-
-                                <p>
-                                    Permanently remove your personal data, tasks,
-                                    and chat history. This cannot be undone.
-                                </p>
+                                <p>Permanently remove your personal data, tasks, and chat history. This cannot be undone.</p>
                             </div>
-
-                            <form
-                                action="/delete-account"
-                                method="POST"
-                                style="margin:0;"
-                                onsubmit="return confirm('Are you absolutely sure you want to permanently delete your account?');">
-
-                                <button type="submit" class="btn-danger">
-                                    Delete Account
-                                </button>
-
+                            <form action="/delete-account" method="POST" style="margin: 0;" onsubmit="return confirm('Are you absolutely sure you want to permanently delete your account?');">
+                                <button type="submit" class="btn-danger">Delete Account</button>
                             </form>
-
                         </div>
 
                     </div>
+                    <!-- END DANGER ZONE -->
 
                 </div>
+                <!-- END settings-content-container -->
 
             </div>
+            <!-- END neo-settings-content -->
 
         </div>
-    </div>  
+        <!-- END neo-settings-modal -->
+
+    </div>
+    <!-- END neo-settings-overlay -->  
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.1/marked.min.js"></script>
 
