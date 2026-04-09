@@ -30,6 +30,7 @@ class UIManager {
         this.initSidebar();
         this.initLightbox();
         this.initGlobalClick(); 
+        this.initSettingsModal();
     }
 
     // --- Global Click Listener (Closes open menus) ---
@@ -108,6 +109,61 @@ class UIManager {
             if (event.target === this.imageModal) {
                 this.imageModal.style.display = "none";
             }
+        });
+    }
+
+    initSettingsModal() {
+        this.settingsModal = document.getElementById("settings-modal-overlay");
+        const btnSidebar = document.getElementById("open-settings-btn-sidebar");
+        const btnHeader = document.getElementById("open-settings-btn-header");
+        const btnClose = document.getElementById("close-settings-btn");
+        const navItems = document.querySelectorAll(".settings-nav-item");
+        const sections = document.querySelectorAll(".settings-section");
+
+        // 1. Open Settings Logic
+        const openSettings = () => {
+            // Close dropdown if it's open
+            if (this.userDropdownMenu) this.userDropdownMenu.classList.add("hidden");
+            
+            this.settingsModal.classList.remove("hidden");
+            // Small timeout allows the CSS transition to trigger smoothly
+            setTimeout(() => this.settingsModal.classList.add("visible"), 10); 
+        };
+
+        if (btnSidebar) btnSidebar.addEventListener("click", openSettings);
+        if (btnHeader) btnHeader.addEventListener("click", openSettings);
+
+        // 2. Close Settings Logic
+        const closeSettings = () => {
+            this.settingsModal.classList.remove("visible");
+            setTimeout(() => this.settingsModal.classList.add("hidden"), 300);
+        };
+
+        if (btnClose) btnClose.addEventListener("click", closeSettings);
+
+        // Allow pressing "Escape" key to close settings (Discord feature)
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Escape" && this.settingsModal.classList.contains("visible")) {
+                closeSettings();
+            }
+        });
+
+        // 3. Tab Switching Logic
+        navItems.forEach(item => {
+            item.addEventListener("click", () => {
+                // Remove active states from all tabs
+                navItems.forEach(nav => nav.classList.remove("active"));
+                
+                // Hide all content sections
+                sections.forEach(sec => sec.classList.add("hidden"));
+
+                // Add active state to clicked tab
+                item.classList.add("active");
+                
+                // Show matching section based on data-target attribute
+                const targetId = item.getAttribute("data-target");
+                document.getElementById(targetId).classList.remove("hidden");
+            });
         });
     }
 
