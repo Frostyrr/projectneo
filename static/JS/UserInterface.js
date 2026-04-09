@@ -31,7 +31,6 @@ class UIManager {
         this.initLightbox();
         this.initGlobalClick(); 
         this.initSettingsModal();
-        this.initSettingsForm();
     }
 
     // --- Global Click Listener (Closes open menus) ---
@@ -278,51 +277,7 @@ class UIManager {
             });
         }
     }
-
-    initSettingsForm() {
-    const settingsForm = document.getElementById("settings-update-form");
-    if (settingsForm) {
-        settingsForm.addEventListener("submit", async (e) => {
-            e.preventDefault();
-
-            const msgDiv = document.getElementById("settings-message");
-            msgDiv.textContent = "Updating...";
-            msgDiv.style.color = "#a0a0a0";
-
-            const email = document.getElementById("settings-email").value;
-            const current_password = document.getElementById("settings-current-password").value;
-            const new_password = document.getElementById("settings-new-password").value;
-            const confirm_password = document.getElementById("settings-confirm-password").value;
-
-            try {
-                const response = await fetch("/api/user/settings", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ email, current_password, new_password, confirm_password })
-                });
-
-                const data = await response.json();
-
-                if (response.ok) {
-                    msgDiv.textContent = data.success;
-                    msgDiv.style.color = "#4ade96";
-
-                    document.getElementById("settings-current-password").value = "";
-                    document.getElementById("settings-new-password").value = "";
-                    document.getElementById("settings-confirm-password").value = "";
-                } else {
-                    msgDiv.textContent = data.error;
-                    msgDiv.style.color = "#ff6b6d";
-                }
-
-            } catch (err) {
-                msgDiv.textContent = "A network error occurred.";
-                msgDiv.style.color = "#ff6b6d";
-            }
-        });
-    }
-}
-
+    
     // --- UI State Helpers ---
     clearChatBox() {
         if (this.welcomeScreen) this.welcomeScreen.style.display = "none";
@@ -411,17 +366,76 @@ class UIManager {
                 onPinChat(chat.chat_id, !chat.is_pinned);
             });
 
+            // Rename logic
             optionsMenu.querySelector('.rename-btn').addEventListener("click", () => {
                 optionsMenu.classList.add("hidden");
-                const newTitle = prompt("Enter new chat name:", chat.title);
-                if (newTitle && newTitle.trim() !== "") onRenameChat(chat.chat_id, newTitle.trim());
+                
+                const renameModal = document.getElementById("rename-chat-modal");
+                const renameInput = document.getElementById("rename-chat-input");
+                let confirmBtn = document.getElementById("confirm-rename-btn");
+                let cancelBtn = document.getElementById("cancel-rename-btn");
+
+                // Clone buttons to strip out old event listeners (prevents multi-firing on different chats)
+                const newConfirmBtn = confirmBtn.cloneNode(true);
+                confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
+                confirmBtn = newConfirmBtn;
+
+                const newCancelBtn = cancelBtn.cloneNode(true);
+                cancelBtn.parentNode.replaceChild(newCancelBtn, cancelBtn);
+                cancelBtn = newCancelBtn;
+
+                // Setup UI
+                renameInput.value = chat.title;
+                renameModal.classList.remove("hidden");
+                setTimeout(() => renameModal.classList.add("visible"), 10);
+                renameInput.focus();
+
+                confirmBtn.addEventListener("click", () => {
+                    const newTitle = renameInput.value.trim();
+                    if (newTitle) onRenameChat(chat.chat_id, newTitle);
+                    renameModal.classList.remove("visible");
+                    setTimeout(() => renameModal.classList.add("hidden"), 300);
+                });
+
+                cancelBtn.addEventListener("click", () => {
+                    renameModal.classList.remove("visible");
+                    setTimeout(() => renameModal.classList.add("hidden"), 300);
+                });
             });
 
+            // Delete logic
             optionsMenu.querySelector('.delete-btn').addEventListener("click", () => {
                 optionsMenu.classList.add("hidden");
-                if (confirm(`Are you sure you want to delete "${chat.title}"?`)) {
+                
+                const deleteModal = document.getElementById("delete-chat-modal");
+                const chatNameEl = document.getElementById("delete-chat-name");
+                let confirmBtn = document.getElementById("confirm-delete-chat-btn");
+                let cancelBtn = document.getElementById("cancel-delete-chat-btn");
+
+                // Clone buttons to strip out old event listeners
+                const newConfirmBtn = confirmBtn.cloneNode(true);
+                confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
+                confirmBtn = newConfirmBtn;
+
+                const newCancelBtn = cancelBtn.cloneNode(true);
+                cancelBtn.parentNode.replaceChild(newCancelBtn, cancelBtn);
+                cancelBtn = newCancelBtn;
+
+                // Setup UI
+                chatNameEl.textContent = chat.title;
+                deleteModal.classList.remove("hidden");
+                setTimeout(() => deleteModal.classList.add("visible"), 10);
+
+                confirmBtn.addEventListener("click", () => {
                     onDeleteChat(chat.chat_id);
-                }
+                    deleteModal.classList.remove("visible");
+                    setTimeout(() => deleteModal.classList.add("hidden"), 300);
+                });
+
+                cancelBtn.addEventListener("click", () => {
+                    deleteModal.classList.remove("visible");
+                    setTimeout(() => deleteModal.classList.add("hidden"), 300);
+                });
             });
 
             // 5. Append to List
