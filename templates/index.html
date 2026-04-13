@@ -180,9 +180,30 @@
                         <form class="settings-form" id="settings-update-form">
                             <div id="settings-message" style="margin-bottom: 16px; font-size: 13.5px; font-weight: 500;"></div>
 
-                            <div class="setting-row input-row">
-                                <label for="settings-email">Email Address</label>
-                                <input type="email" id="settings-email" name="email" value="{{ email }}" placeholder="Update your email">
+                            <!-- Email: locked display -->
+                            <div class="setting-row input-row" id="email-display-row">
+                                <div class="label-with-desc">
+                                    <label>Email Address</label>
+                                    <p>Click Edit to change your email address.</p>
+                                </div>
+                                <div class="email-locked-field">
+                                    <span class="material-symbols-rounded email-lock-icon">lock</span>
+                                    <span id="email-masked-display" data-email="{{ email }}"></span>
+                                    <button type="button" id="edit-email-btn" class="edit-email-btn">
+                                        <span class="material-symbols-rounded">edit</span> Edit
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Email: edit mode (hidden by default) -->
+                            <div class="setting-row input-row" id="email-edit-row" style="display:none;">
+                                <label for="settings-email">New Email Address</label>
+                                <div class="email-edit-wrap">
+                                    <input type="email" id="settings-email" name="email" placeholder="Enter new email address">
+                                    <button type="button" id="cancel-email-edit-btn" class="cancel-email-edit-btn" title="Cancel">
+                                        <span class="material-symbols-rounded">close</span>
+                                    </button>
+                                </div>
                             </div>
 
                             <div class="setting-divider"></div>
@@ -290,6 +311,7 @@
             </div>
         </div>
     </div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.1/marked.min.js"></script>
     <script src="/static/JS/api.js"></script>
     <script src="/static/JS/UserInterface.js"></script>

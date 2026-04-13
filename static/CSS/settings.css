@@ -441,5 +441,130 @@ input:checked + .slider:before {
     background: #4ade96;
 }
  
-.slider.round { border-radius: 22px; }
-.slider.round:before { border-radius: 50%; }
+.slider.round { 
+    border-radius: 22px; 
+}
+
+.slider.round:before { 
+    border-radius: 50%;
+}
+ 
+
+/* ─── Email Locked Field ───────────────────────────────────── */
+.email-locked-field {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 260px;
+    flex-shrink: 0;
+    background: #111213;
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 10px;
+    padding: 10px 12px;
+    color: #6b6f76;
+    font-size: 13.5px;
+    font-family: 'DM Sans', sans-serif;
+    letter-spacing: 0.02em;
+}
+
+.email-lock-icon {
+    font-size: 15px !important;
+    color: #3a3d42;
+    flex-shrink: 0;
+}
+
+#email-masked-display {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #5a5d63;
+    font-size: 13px;
+    letter-spacing: 0.03em;
+}
+
+.edit-email-btn {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(74, 222, 150, 0.08);
+    border: 1px solid rgba(74, 222, 150, 0.2);
+    color: #4ade96;
+    font-size: 12px;
+    font-weight: 600;
+    font-family: 'DM Sans', sans-serif;
+    border-radius: 7px;
+    padding: 4px 10px;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: all 0.2s;
+    letter-spacing: -0.01em;
+}
+
+.edit-email-btn .material-symbols-rounded {
+    font-size: 13px;
+}
+
+.edit-email-btn:hover {
+    background: rgba(74, 222, 150, 0.15);
+    border-color: rgba(74, 222, 150, 0.4);
+    box-shadow: 0 0 12px rgba(74, 222, 150, 0.15);
+}
+
+/* ─── Email Edit Row ───────────────────────────────────────── */
+.email-edit-wrap {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: 260px;
+    flex-shrink: 0;
+}
+
+.email-edit-wrap input {
+    flex: 1;
+    min-width: 0;
+    background: #111213;
+    border: 1px solid rgba(74, 222, 150, 0.35);
+    box-shadow: 0 0 0 3px rgba(74, 222, 150, 0.08);
+    color: #e8eaed;
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 13.5px;
+    font-family: 'DM Sans', sans-serif;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.email-edit-wrap input::placeholder {
+    color: #3a3d42;
+}
+
+.email-edit-wrap input:focus {
+    border-color: rgba(74, 222, 150, 0.5);
+    box-shadow: 0 0 0 3px rgba(74, 222, 150, 0.12);
+}
+
+.cancel-email-edit-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.07);
+    color: #5a5d63;
+    border-radius: 8px;
+    padding: 6px;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: all 0.2s;
+    line-height: 0;
+}
+
+.cancel-email-edit-btn .material-symbols-rounded {
+    font-size: 16px;
+}
+
+.cancel-email-edit-btn:hover {
+    background: rgba(255,77,79,0.1);
+    border-color: rgba(255,107,109,0.3);
+    color: #ff6b6d;
+}

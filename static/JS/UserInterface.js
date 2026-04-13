@@ -274,6 +274,35 @@ class UIManager {
                 document.getElementById("settings-message").style.color = "#a0a0a0";
             });
         }
+
+        const rawEmail = "{{ email }}";  // ← keep this if Flask renders the JS file, 
+
+        function maskEmail(email) {
+            const [local, domain] = email.split('@');
+            if (!domain) return email;
+            return local[0] + '•'.repeat(Math.max(local.length - 1, 3)) + '@' + domain;
+        }
+
+        const maskedSpan  = document.getElementById('email-masked-display');
+        const displayRow  = document.getElementById('email-display-row');
+        const editRow     = document.getElementById('email-edit-row');
+        const editBtn     = document.getElementById('edit-email-btn');
+        const cancelEmailBtn = document.getElementById('cancel-email-edit-btn');
+        const emailInput  = document.getElementById('settings-email');
+
+        if (maskedSpan) maskedSpan.textContent = maskEmail(maskedSpan.dataset.email || "");
+
+        if (editBtn) editBtn.addEventListener('click', () => {
+            displayRow.style.display = 'none';
+            editRow.style.display    = 'flex';
+            if (emailInput) emailInput.focus();
+        });
+
+        if (cancelEmailBtn) cancelEmailBtn.addEventListener('click', () => {
+            editRow.style.display    = 'none';
+            displayRow.style.display = 'flex';
+            if (emailInput) emailInput.value = '';
+        });
     }
     
     // --- UI State Helpers ---
