@@ -33,17 +33,11 @@ function populateTimeDropdown(selectElement, startHour = 7, endHour = 21) {
 populateTimeDropdown(startSelect);
 populateTimeDropdown(endSelect);
 
-<<<<<<< HEAD
-function renderSchedule() {
-    scheduleTableBody.innerHTML = "";
-    
-=======
 // Render Schedule
 function renderSchedule() {
     scheduleTableBody.innerHTML = "";
     
     // Header
->>>>>>> 3ee73af52ffa456ff5d9f64efa90ef77f55b398b
     scheduleHeaderRow.innerHTML = "";
     if(deleteMode && schedule.length>0){
         const thCheck = document.createElement("th");
@@ -85,10 +79,7 @@ function renderSchedule() {
     });
 }
 
-<<<<<<< HEAD
-=======
 // Add / Update Class
->>>>>>> 3ee73af52ffa456ff5d9f64efa90ef77f55b398b
 addClassBtn.addEventListener("click",()=>{
     const cls = classInput.value.trim();
     const day = dayInput.value;

@@ -2,8 +2,6 @@
 // This file handles only DOM manipulation, animations, buttons, and HTML rendering
 // ================================================================================
 
-// static/JS/ui.js
-
 class UIManager {
     constructor() {
         // DOM Elements - Chat Area
