@@ -145,8 +145,8 @@
                     <li class="settings-nav-item active" data-target="section-my-account">
                         <span class="material-symbols-rounded">manage_accounts</span> Account
                     </li>
-                    <li class="settings-nav-item" data-target="section-notifications">
-                        <span class="material-symbols-rounded">notifications</span> Notifications
+                    <li class="settings-nav-item" data-target="section-general">
+                        <span class="material-symbols-rounded">notifications</span> General
                     </li>
                     <div class="settings-divider"></div>
                     <li class="settings-nav-item danger" data-target="section-danger-zone">
@@ -245,9 +245,25 @@
                         </div>
                     </div>
 
-                    <div id="section-notifications" class="settings-section hidden">
-                        <h2>Notifications</h2>
+                    <!-- GENERAL SECTION -->
+                    <div id="section-general" class="settings-section hidden">
+                        <h2>General Settings</h2>
 
+                        <div class="toggle-row">
+                            <div class="toggle-info">
+                                <h4>Appearance</h4>
+                                <p>Choose between light and dark mode.</p>
+                            </div>
+                            <select id="theme-select" style="background: #111213; border: 1px solid rgba(255,255,255,0.07); color: #e8eaed; padding: 6px 12px; border-radius: 8px; outline: none; cursor: pointer;">
+                                <option value="dark">Dark Mode</option>
+                                <option value="light">Light Mode</option>
+                            </select>
+                        </div>
+
+                        <div class="setting-divider"></div>
+
+                        <h3 style="color: #e8eaed; font-size: 15px; margin-bottom: 12px;">Notifications</h3>
+                        
                         <div class="toggle-row">
                             <div class="toggle-info">
                                 <h4>Background Notifications</h4>
@@ -273,6 +289,7 @@
                         </div>
                     </div>
 
+                    <!-- DANGER ZONE SECTION -->
                     <div id="section-danger-zone" class="settings-section hidden">
                         <h2 class="danger-title">Danger Zone</h2>
 

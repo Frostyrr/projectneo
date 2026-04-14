@@ -303,6 +303,25 @@ class UIManager {
             displayRow.style.display = 'flex';
             if (emailInput) emailInput.value = '';
         });
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const themeSelect = document.getElementById("theme-select");
+            
+            // Load saved theme from localStorage, default to dark
+            const savedTheme = localStorage.getItem("neo-theme") || "dark";
+            document.documentElement.setAttribute("data-theme", savedTheme);
+            
+            if (themeSelect) {
+                themeSelect.value = savedTheme;
+                
+                // Listen for user changes
+                themeSelect.addEventListener("change", (e) => {
+                    const theme = e.target.value;
+                    document.documentElement.setAttribute("data-theme", theme);
+                    localStorage.setItem("neo-theme", theme);
+                });
+            }
+        });
     }
     
     // --- UI State Helpers ---

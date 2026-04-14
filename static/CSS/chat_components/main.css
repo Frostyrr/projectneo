@@ -4,10 +4,31 @@
     padding: 0;
 }
 
+:root {
+    /* Default Dark Mode Colors */
+    --bg-main: #131314;
+    --text-main: #e3e3e3;
+    --bg-sidebar: #1e1f20;
+    --border-color: #333538;
+}
+
+[data-theme="light"] {
+    /* Light Mode Colors */
+    --bg-main: #f0f2f5;
+    --text-main: #1a1a1c;
+    --bg-sidebar: #ffffff;
+    --border-color: #d1d5db;
+}
+
+.sidebar {
+    background-color: var(--bg-sidebar);
+    border-right: 1px solid var(--border-color);
+}
+
 body {
     font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-    background-color: #131314;
-    color: #e3e3e3;
+    background-color: var(--bg-main);
+    color: var(--text-main);
     height: 100vh;
     overflow: hidden;
 }
