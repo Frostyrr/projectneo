@@ -9,8 +9,8 @@ db = Database(Config.MONGO_URI)
 bot = NeoAssistant(Config.GROQ_API_KEY, Config.GROQ_API_URL)
 
 email_service = EmailService(
-    script_url="https://script.google.com/macros/s/AKfycbyFrZiYUWyc6XEkFEkjCrq27q139K4orMEibpMvxdLe6iBXYsxI72Giob-dHW8nZZVw/exec",
-    secret_token="NeoPassword123!"
+    script_url=Config.EMAIL_SCRIPT_URL,
+    secret_token=Config.EMAIL_SECRET_TOKEN
 )
 
 scheduler_service = SchedulerService(db)

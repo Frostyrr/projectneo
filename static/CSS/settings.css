@@ -347,6 +347,17 @@
 }
  
 /* ─── Toggle Rows ──────────────────────────────────────────── */
+
+.text-row {
+    color: #e8eaed; 
+    font-size: 15px; 
+    margin-bottom: 12px;
+}
+
+.toggle-info {
+    flex-basis: 100%;
+}
+
 .toggle-row {
     display: flex;
     justify-content: space-between;
@@ -371,6 +382,22 @@
     margin: 0;
     max-width: 320px;
 }
+
+.appearance-row {
+    flex-wrap: wrap;
+}
+
+.appearance-row .toggle-info {
+    flex: 0 0 100%;
+}
+
+.appearance-row .theme-options {
+    flex-basis: 100%;
+    display: flex;
+    gap: 30px;
+    margin-top: 20px;
+}
+
  
 /* ─── Danger Zone ──────────────────────────────────────────── */
 .danger-title {
@@ -568,4 +595,33 @@ input:checked + .slider:before {
     background: rgba(255,77,79,0.1);
     border-color: rgba(255,107,109,0.3);
     color: #ff6b6d;
+}
+
+/* Settings Theme Toggle */
+.theme-options {
+    display: flex;
+    gap: 15px; /* space between images */
+}
+
+.theme-options img {
+    width: 120px;
+    cursor: pointer;
+    border-radius: 12px;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+    border: 1px solid transparent;
+}
+
+/* Hover effect */
+.theme-options img:hover {
+    transform: scale(1.05);
+    filter: brightness(95%);
+}
+
+/* Optional: dim inactive one */
+.theme-options img.inactive {
+    opacity: 1;
+}
+
+.theme-options img:not(.inactive) {
+    border-color: #2ecc71;
 }

@@ -276,3 +276,49 @@
     background-color: #444;
     color: #e3e3e3;
 }
+
+/* --- Sidebar Chat Search --- */
+.sidebar-search {
+    display: flex;
+    align-items: center;
+    background-color: #131314;
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin-bottom: 12px;
+    gap: 8px;
+    border: 1px solid transparent;
+    transition: border-color 0.2s;
+}
+
+.sidebar-search:focus-within {
+    border-color: #1e5737;
+}
+
+.sidebar-search .material-symbols-rounded {
+    color: #a0a0a0;
+    font-size: 18px;
+}
+
+#chat-search-input {
+    background: transparent;
+    border: none;
+    color: #e3e3e3;
+    font-size: 14px;
+    width: 100%;
+    outline: none;
+}
+
+#chat-search-input::placeholder {
+    color: #a0a0a0;
+}
+
+/* Light mode specific search overrides */
+[data-theme="light"] .sidebar-search {
+    background-color: #f1f3f4;
+}
+[data-theme="light"] #chat-search-input {
+    color: #202124;
+}
+[data-theme="light"] .sidebar-search:focus-within {
+    border-color: #1a73e8;
+}

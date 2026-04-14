@@ -51,7 +51,7 @@ class Database:
         # Delete the user's account
         self.users.delete_one({"username": username})
         # Delete associated chat history
-        self.chat_history.delete_one({"username": username})
+        self.chat_history.delete_many({"username": username})
         # Delete associated reminders
         self.reminders.delete_many({"username": username})
         return True
@@ -106,12 +106,18 @@ class Database:
     def delete_chat(self, chat_id):
         self.chat_history.delete_one({"chat_id": chat_id})
 
-    def save_reminder(self, username, task, time_str):
-        self.reminders.insert_one({
-            "username": username,
-            "task": task,
-            "time": time_str
-        })
+    def save_reminder(self, username, source_type, source_id, reminder_time, reminder_note):
+            """Save a reminder linked to a task or class"""
+            self.reminders.insert_one({
+                "username": username,
+                "source_type": source_type,  
+                "source_id": source_id,  
+                "reminder_time": reminder_time,
+                "reminder_note": reminder_note,
+                "is_completed": False,
+                "is_dismissed": False,
+                "created_at": datetime.utcnow()
+            })
 
     def save_otp(self, email, otp, expire_minutes=10):
         expire_at = datetime.utcnow() + timedelta(minutes=expire_minutes)
