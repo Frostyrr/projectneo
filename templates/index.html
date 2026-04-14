@@ -249,15 +249,15 @@
                     <div id="section-general" class="settings-section hidden">
                         <h2>General Settings</h2>
 
+                        <h3 style="color: #e8eaed; font-size: 15px; margin-bottom: 12px;">Appearance</h3>
                         <div class="toggle-row">
                             <div class="toggle-info">
-                                <h4>Appearance</h4>
-                                <p>Choose between light and dark mode.</p>
+                                <h4>Color mode</h4>
+                                <p>Toggle between dark and light mode for the application.</p>
                             </div>
-                            <select id="theme-select" style="background: #111213; border: 1px solid rgba(255,255,255,0.07); color: #e8eaed; padding: 6px 12px; border-radius: 8px; outline: none; cursor: pointer;">
-                                <option value="dark">Dark Mode</option>
-                                <option value="light">Light Mode</option>
-                            </select>
+                            <label class="switch">
+                                <input type="checkbox" id="theme-toggle"> <span class="slider round"></span>
+                            </label>
                         </div>
 
                         <div class="setting-divider"></div>
@@ -274,8 +274,6 @@
                                 <span class="slider round"></span>
                             </label>
                         </div>
-
-                        <div class="setting-divider"></div>
 
                         <div class="toggle-row">
                             <div class="toggle-info">
@@ -331,10 +329,18 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.1/marked.min.js"></script>
     <script src="/static/JS/api.js"></script>
-    <script src="/static/JS/UserInterface.js"></script>
     <script src="/static/JS/app.js"></script>
     <script src="/static/JS/SpeechRecognition.js"></script>
     <script src="/static/JS/ImageUpload.js"></script>
+
+    <!-- UIComponents (load before UserInterface.js) -->
+    <script src="/static/JS/UIComponents/Sidebar.js"></script>
+    <script src="/static/JS/UIComponents/Lightbox.js"></script>
+    <script src="/static/JS/UIComponents/ThemeToggle.js"></script>
+    <script src="/static/JS/UIComponents/SettingsModal.js"></script>
+    <script src="/static/JS/UIComponents/GlobalClick.js"></script>
+    <script src="/static/JS/UIComponents/ChatRenderer.js"></script>
+    <script src="/static/JS/UIComponents/UIState.js"></script>
     
 </body>
 </html>

@@ -4,25 +4,41 @@
     padding: 0;
 }
 
+/* --- THEME VARIABLE DEFINITIONS --- */
+
 :root {
-    /* Default Dark Mode Colors */
-    --bg-main: #131314;
-    --text-main: #e3e3e3;
-    --bg-sidebar: #1e1f20;
-    --border-color: #333538;
+  /* Default Dark Theme Colors */
+  --bg-main: #131314;
+  --bg-sidebar: #1e1f20;
+  --bg-user-msg: #333538;
+  --border-color: #333538;
+  --text-main: #e8eaed;
+  --text-secondary: #9aa0a6;
+  --accent-color: #5ab1b0;
+  --modal-bg: rgba(0, 0, 0, 0.7);
+  --modal-content-bg: #111213;
 }
 
 [data-theme="light"] {
-    /* Light Mode Colors */
-    --bg-main: #f0f2f5;
-    --text-main: #1a1a1c;
-    --bg-sidebar: #ffffff;
-    --border-color: #d1d5db;
+  /* Light Theme Colors */
+  --bg-main: #f8f9fa;
+  --bg-sidebar: #ffffff;
+  --bg-user-msg: #e8f0fe;
+  --border-color: #dadce0;
+  --text-main: #202124;
+  --text-secondary: #5f6368;
+  --accent-color: #4b8988; /* A slightly darker accent for better contrast on light */
+  --modal-bg: rgba(0, 0, 0, 0.3);
+  --modal-content-bg: #ffffff;
 }
 
-.sidebar {
-    background-color: var(--bg-sidebar);
-    border-right: 1px solid var(--border-color);
+/* --- THEME-BASED STYLING FOR TOGGLES --- */
+[data-theme="light"] .slider {
+  background-color: #bdc1c6; /* Lighter track in light mode */
+}
+
+[data-theme="light"] input:focus + .slider {
+  box-shadow: 0 0 1px #bdc1c6;
 }
 
 body {
@@ -33,6 +49,17 @@ body {
     overflow: hidden;
 }
 
+.modal-content {
+  background-color: var(--modal-content-bg); /* Used variable */
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 600px;
+  margin: 100px auto;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  position: relative;
+}
+
+
 .app-container {
     display: flex;
     height: 100vh;
@@ -40,12 +67,26 @@ body {
 }
 
 /* ---------------- MAIN CONTENT ---------------- */
+
 .main-content {
     flex: 1;
     display: flex;
     flex-direction: column;
     position: relative;
     min-width: 0;
+}
+
+.main-view {
+  background-color: var(--bg-main); /* Used variable */
+}
+
+.main-view-sidebar {
+  background-color: var(--bg-sidebar); /* Used variable */
+  border-right: 1px solid var(--border-color); /* Used variable */
+}
+
+[data-theme="light"] .chat-message.user .message-box {
+    color: #000;
 }
 
 .chat-header {
