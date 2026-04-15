@@ -58,6 +58,43 @@ def update_settings():
         return jsonify({"success": True, "message": " ".join(response_messages)})
     else:
         return jsonify({"success": True, "message": "No changes were made."})
+    
+@user_bp.route("/api/user/request-email-edit", methods=["POST"])
+def request_email_edit():
+    if "user" not in session:
+        return jsonify({"error": "Unauthorized"}), 401
+    
+    username = session["user"]
+    user_data = db.get_user(username)
+    current_email = user_data.get("email")
+    
+    if not current_email:
+        return jsonify({"error": "No current email found."}), 400
+    
+    otp = str(random.randint(100000, 999999))
+    db.save_otp(current_email, otp)
+    email_service.send_otp(current_email, otp, purpose="verify_old_email")
+    
+    return jsonify({"success": True, "message": "Verification code sent."})
+
+# Verification before changing email address
+@user_bp.route("/api/user/verify-old-email", methods=["POST"])
+def verify_old_email():
+    if "user" not in session:
+        return jsonify({"error": "Unauthorized"}), 401
+    
+    username = session["user"]
+    user_data = db.get_user(username)
+    current_email = user_data.get("email")
+    
+    otp = request.json.get("otp").strip()
+    
+    if db.verify_otp(current_email, otp):
+        # Optional: You can set a session flag here to securely enforce this check later
+        session["can_edit_email"] = True 
+        return jsonify({"success": True})
+    else:
+        return jsonify({"error": "Invalid or expired verification code."}), 400
 
 @user_bp.route("/api/user/verify-email-change", methods=["POST"])
 def verify_email_change():

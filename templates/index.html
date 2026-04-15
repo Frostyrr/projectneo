@@ -337,6 +337,33 @@
         </div>
     </div>
 
+    <div id="verify-old-email-modal" class="modal-overlay verify-modal-overlay hidden">
+        <div class="custom-modal-card verify-modal-card">
+            <span class="material-symbols-rounded verify-icon-large">mark_email_read</span>
+            <h3 class="verify-modal-title">Verify email address</h3>
+            <p class="verify-modal-desc">
+                We'll need to verify your old email address, <strong id="old-email-display"></strong>, in order to change it.
+            </p>
+            <div class="verify-modal-buttons">
+                <button id="cancel-verify-email-btn" class="btn-cancel-outline">Cancel</button>
+                <button id="send-verify-email-btn" class="btn-primary-filled btn-verify-send">Send Verification Code</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="enter-old-email-otp-modal" class="modal-overlay verify-modal-overlay hidden">
+        <div class="custom-modal-card">
+            <center><h3>Enter Verification Code</h3></center>
+            <p style="margin-bottom: 16px;">Please enter the 6-digit code sent to your current email.</p>
+            <input type="text" id="old-email-otp-input" class="custom-modal-input" placeholder="000000" autocomplete="off" style="margin-bottom: 12px;">
+            <div id="old-email-otp-error" class="otp-error-msg"></div>
+            <div class="verify-modal-buttons">
+                <button id="cancel-old-email-otp-btn" class="btn-cancel-outline">Cancel</button>
+                <button id="submit-old-email-otp-btn" class="btn-primary-filled">Verify</button>
+            </div>
+        </div>
+    </div>    
+
     <!-- UIComponents (load before UserInterface.js) -->
     <script src="/static/JS/UIComponents/Sidebar.js"></script>
     <script src="/static/JS/UIComponents/Lightbox.js"></script>

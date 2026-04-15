@@ -625,3 +625,189 @@ input:checked + .slider:before {
 .theme-options img:not(.inactive) {
     border-color: #2ecc71;
 }
+
+/* ─── Verification Modals Styling ──────────────────────────── */
+
+.verify-modal-overlay {
+    z-index: 4000;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.616);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+}
+
+.verify-modal-overlay.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.verify-modal-overlay.hidden {
+    display: none;
+}
+
+.verify-modal-card {
+    /* Matched to .neo-settings-modal */
+    background: #161718;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 
+        0 0 0 1px rgba(255, 255, 255, 0.06), 
+        0 24px 64px rgba(0, 0, 0, 0.5), 
+        inset 0 1px 0 rgba(255, 255, 255, 0.07);
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+    padding: 56px 40px;
+    width: 92%;
+    max-width: 460px;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    transform: translateY(12px) scale(0.98);
+    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.verify-modal-overlay.visible .verify-modal-card {
+    transform: translateY(0) scale(1);
+}
+
+.verify-modal-card h3 {
+    font-size: 20px;
+    margin-bottom: 30px;
+}
+
+.verify-icon-large {
+    /* Styled like a modern status circle, inspired by your avatar-circle */
+    font-size: 42px;
+    color: #4ade96;
+    margin-bottom: 20px;
+    background: rgba(74, 222, 150, 0.08);
+    padding: 16px;
+    border-radius: 50%;
+    border: 1px solid rgba(74, 222, 150, 0.15);
+    box-shadow: 0 0 20px rgba(74, 222, 150, 0.05);
+}
+
+.verify-modal-title {
+    /* Sized down from 30px to 20px for a cleaner desktop/web app feel */
+    font-size: 40px;
+    font-weight: 600;
+    color: #e8eaed;
+    margin-bottom: 12px;
+    letter-spacing: -0.01em;
+}
+
+.verify-modal-desc {
+    color: #c8cbd0;
+    font-size: 13.5px;
+    line-height: 1.5;
+    margin-bottom: 16px;
+}
+
+.verify-modal-desc strong {
+    color: #e8eaed;
+    font-weight: 600;
+}
+
+.verify-modal-note {
+    font-size: 12px;
+    color: #5a5d63; /* Dulled out to match profile p text */
+    margin-bottom: 32px;
+}
+
+.verify-modal-buttons {
+    width: 100%;
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+
+/* Base outline button style to match your neutral borders */
+.verify-modal-buttons .btn-cancel-outline {
+    flex: 1;
+    background: transparent;
+    color: #c8cbd0;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 10px 22px;
+    font-size: 13.5px;
+    font-weight: 600;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.verify-modal-buttons .btn-cancel-outline:hover {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: #e8eaed;
+}
+
+/* Match the exact gradient and hover state of .save-btn */
+.verify-modal-buttons .btn-primary-filled,
+.btn-verify-send {
+    flex: 1;
+    background: linear-gradient(90deg, rgba(30, 87, 55, 1) 0%, rgb(4, 167, 91) 100%) !important;
+    color: rgb(232, 232, 232) !important;
+    border: none;
+    padding: 10px 22px;
+    font-size: 13.5px;
+    font-weight: 600;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    border-radius: 10px;
+    cursor: pointer;
+    letter-spacing: -0.01em;
+    transition: all 0.2s ease;
+}
+
+.verify-modal-buttons .btn-primary-filled:hover,
+.btn-verify-send:hover {
+    background: linear-gradient(90deg, rgb(41, 155, 91) 0%, rgb(5, 211, 115) 100%) !important;
+    box-shadow: 0 4px 20px rgba(74, 222, 150, 0.35);
+    transform: translateY(-1px);
+}
+
+.verify-modal-buttons .btn-primary-filled:active,
+.btn-verify-send:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(74, 222, 150, 0.2);
+}
+
+/* Modernized error styling with background and borders matching .btn-danger */
+.otp-error-msg {
+    color: #ff6b6d;
+    font-size: 12.5px;
+    font-weight: 500;
+    margin-bottom: 16px;
+    display: none;
+    background: rgba(255, 77, 79, 0.08);
+    border: 1px solid rgba(255, 107, 109, 0.3);
+    padding: 8px 12px;
+    border-radius: 8px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Styling for the OTP input to match your .input-row */
+.custom-modal-input {
+    width: 100%;
+    box-sizing: border-box;
+    background: #111213;
+    border: 1px solid rgba(255,255,255,0.07);
+    color: #e8eaed;
+    padding: 12px 10px;
+    border-radius: 10px;
+    text-align: center;
+    letter-spacing: 8px;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.custom-modal-input:focus {
+    border-color: rgba(74, 222, 150, 0.35);
+    box-shadow: 0 0 0 3px rgba(74, 222, 150, 0.08);
+}

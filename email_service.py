@@ -9,6 +9,9 @@ class EmailService:
         if purpose == "register":
             subject = "Neo Account Verification OTP"
             html_content = self._get_register_template(otp)
+        elif purpose == "verify_old_email":
+            subject = "Neo - Verify Account Modification"
+            html_content = self._get_verify_old_email_template(otp)
         elif purpose == "update_email":
             subject = "Neo - Verify Your New Email"
             html_content = self._get_update_email_template(otp)
@@ -50,6 +53,17 @@ class EmailService:
             <p>We received a request to reset your password.</p>
             <p>Your One-Time Password (OTP) is: <strong style="font-size: 24px; color: #0d763a;">{otp}</strong></p>
             <p>This code will expire in 10 minutes. If you did not request this, please ignore this email.</p>
+            <p>- Neo Team</p>
+        </div>
+        """
+    
+    def _get_verify_old_email_template(self, otp):
+        return f"""
+        <div style="font-family: sans-serif; color: #333;">
+            <h2>Verify Email Modification</h2>
+            <p>We received a request to change the email address associated with your Neo account.</p>
+            <p>Your Verification Code is: <strong style="font-size: 24px; color: #0d763a;">{otp}</strong></p>
+            <p>This code will expire in 10 minutes. If you did not request this change, please secure your account immediately.</p>
             <p>- Neo Team</p>
         </div>
         """

@@ -171,33 +171,139 @@ class SettingsModalManager {
     }
 
     initEmailEdit() {
-        const maskedSpan = document.getElementById("email-masked-display");
-        const displayRow = document.getElementById("email-display-row");
-        const editRow = document.getElementById("email-edit-row");
-        const editBtn = document.getElementById("edit-email-btn");
-        const cancelEmailBtn = document.getElementById("cancel-email-edit-btn");
-        const emailInput = document.getElementById("settings-email");
+            const maskedSpan = document.getElementById("email-masked-display");
+            const displayRow = document.getElementById("email-display-row");
+            const editRow = document.getElementById("email-edit-row");
+            const editBtn = document.getElementById("edit-email-btn");
+            const cancelEmailBtn = document.getElementById("cancel-email-edit-btn");
+            const emailInput = document.getElementById("settings-email");
 
-        if (maskedSpan) {
-            maskedSpan.textContent = this.maskEmail(maskedSpan.dataset.email || "");
-        }
+            const fullEmail = maskedSpan ? maskedSpan.dataset.email || "" : "";
 
-        if (editBtn) {
-            editBtn.addEventListener("click", () => {
-                displayRow.style.display = "none";
-                editRow.style.display = "flex";
-                if (emailInput) emailInput.focus();
-            });
-        }
+            if (maskedSpan) {
+                maskedSpan.textContent = this.maskEmail(fullEmail);
+            }
 
-        if (cancelEmailBtn) {
-            cancelEmailBtn.addEventListener("click", () => {
-                editRow.style.display = "none";
-                displayRow.style.display = "flex";
-                if (emailInput) emailInput.value = "";
-            });
+            // Modal Elements
+            const verifyModal = document.getElementById("verify-old-email-modal");
+            const oldEmailDisplay = document.getElementById("old-email-display");
+            const cancelVerifyBtn = document.getElementById("cancel-verify-email-btn");
+            const sendVerifyBtn = document.getElementById("send-verify-email-btn");
+            
+            const otpModal = document.getElementById("enter-old-email-otp-modal");
+            const otpInput = document.getElementById("old-email-otp-input");
+            const cancelOtpBtn = document.getElementById("cancel-old-email-otp-btn");
+            const submitOtpBtn = document.getElementById("submit-old-email-otp-btn");
+            const otpError = document.getElementById("old-email-otp-error");
+
+            if (editBtn) {
+                editBtn.addEventListener("click", () => {
+                    if (fullEmail && verifyModal) {
+                        oldEmailDisplay.textContent = fullEmail;
+                        verifyModal.classList.remove("hidden");
+                        setTimeout(() => verifyModal.classList.add("visible"), 10);
+                    } else {
+                        // Fallback if no email is set or modal is missing
+                        displayRow.style.display = "none";
+                        editRow.style.display = "flex";
+                        if (emailInput) emailInput.focus();
+                    }
+                });
+            }
+            
+            if (cancelVerifyBtn) {
+                cancelVerifyBtn.addEventListener("click", () => {
+                    verifyModal.classList.remove("visible");
+                    setTimeout(() => verifyModal.classList.add("hidden"), 300);
+                });
+            }
+            
+            if (sendVerifyBtn) {
+                sendVerifyBtn.addEventListener("click", async () => {
+                    sendVerifyBtn.textContent = "Sending...";
+                    sendVerifyBtn.disabled = true;
+                    try {
+                        const response = await fetch("/api/user/request-email-edit", { method: "POST" });
+                        const data = await response.json();
+                        
+                        if (response.ok) {
+                            verifyModal.classList.remove("visible");
+                            setTimeout(() => {
+                                verifyModal.classList.add("hidden");
+                                otpModal.classList.remove("hidden");
+                                setTimeout(() => otpModal.classList.add("visible"), 10);
+                                otpInput.focus();
+                            }, 300);
+                        } else {
+                            alert(data.error || "Failed to send code.");
+                        }
+                    } catch (error) {
+                        alert("A network error occurred.");
+                    } finally {
+                        sendVerifyBtn.textContent = "Send Verification Code";
+                        sendVerifyBtn.disabled = false;
+                    }
+                });
+            }
+
+            if (cancelOtpBtn) {
+                cancelOtpBtn.addEventListener("click", () => {
+                    otpModal.classList.remove("visible");
+                    setTimeout(() => otpModal.classList.add("hidden"), 300);
+                    otpInput.value = "";
+                    otpError.style.display = "none";
+                });
+            }
+
+            if (submitOtpBtn) {
+                submitOtpBtn.addEventListener("click", async () => {
+                    const otp = otpInput.value.trim();
+                    if (!otp) return;
+                    
+                    submitOtpBtn.textContent = "Verifying...";
+                    submitOtpBtn.disabled = true;
+                    otpError.style.display = "none";
+                    
+                    try {
+                        const response = await fetch("/api/user/verify-old-email", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ otp })
+                        });
+                        const data = await response.json();
+                        
+                        if (response.ok) {
+                            // Success! Hide modal and show edit row
+                            otpModal.classList.remove("visible");
+                            setTimeout(() => {
+                                otpModal.classList.add("hidden");
+                                displayRow.style.display = "none";
+                                editRow.style.display = "flex";
+                                if (emailInput) emailInput.focus();
+                            }, 300);
+                            otpInput.value = "";
+                        } else {
+                            otpError.textContent = data.error || "Invalid code.";
+                            otpError.style.display = "block";
+                        }
+                    } catch (error) {
+                        otpError.textContent = "A network error occurred.";
+                        otpError.style.display = "block";
+                    } finally {
+                        submitOtpBtn.textContent = "Verify";
+                        submitOtpBtn.disabled = false;
+                    }
+                });
+            }
+
+            if (cancelEmailBtn) {
+                cancelEmailBtn.addEventListener("click", () => {
+                    editRow.style.display = "none";
+                    displayRow.style.display = "flex";
+                    if (emailInput) emailInput.value = "";
+                });
+            }
         }
-    }
 
     maskEmail(email) {
         const [local, domain] = email.split("@");
