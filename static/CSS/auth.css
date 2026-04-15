@@ -29,8 +29,8 @@ body {
     flex-direction: column;
     position: relative;
     padding: 0 5%;
-    margin-top: -90px;
-    padding-top: 90px;
+    margin-top: -80px;
+    padding-top: 80px;
 }
 
 .landing-nav {
@@ -39,11 +39,16 @@ body {
     z-index: 1000;
     backdrop-filter: blur(8px);
     box-shadow: 0 1px 0 rgba(255, 255, 255, 0);
+    width: 100%;
+}
+
+.nav-container {
+    max-width: 1245px;
+    margin: 0 auto; /* centers it */
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px 5%;
-    width: 100%;
+    padding: 20px 20px; /* fixed padding instead of % */
     animation: slideDown 0.8s ease forwards;
 }
 
@@ -208,7 +213,7 @@ body {
 }
 
 .auth-card.register {
-    margin-top: 50px;
+    margin-top: 25px;
 }
 
 .auth-card-title {
