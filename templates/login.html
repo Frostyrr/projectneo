@@ -9,32 +9,34 @@
     <link rel="stylesheet" href="/static/CSS/auth.css">
 </head>
 <body>
-
+    <nav class="landing-nav">
+        <a href="/login" class="nav-brand">
+            <img src="/static/images/NEO.png" alt="Neo Logo">
+        </a>
+        <div class="nav-links">
+            <a href="#home">Home</a>
+            <a href="#features">Features</a>
+            <a href="#about-us">About Us</a>
+            <a href="#contact">Contact</a>
+        </div>
+    </nav>
     <div id="home" class="landing-hero">
-        <nav class="landing-nav">
-            <a href="/login" class="nav-brand">
-                <img src="/static/images/NEO.png" alt="Neo Logo">
-            </a>
-            <div class="nav-links">
-                <a href="#home">Home</a>
-                <a href="#features">Features</a>
-                <a href="#about">About</a>
-                <a href="#contact">Contact</a>
-            </div>
-        </nav>
 
         <div class="hero-content-wrapper">
             <div class="hero-text-section">
                 <h1>Neo.</h1>
                 <h2>Your Personal Assistant</h2>
+                <div class="title-divider hero"><hr></div>
                 <p>Neo helps you manage your schedules, and organize your daily tasks seamlessly.</p>
-                <a href="#features" class="btn-outline">LEARN MORE</a>
+                    <div class="button-group">
+                        <a href="/register" class="btn-outline getstarted">Get Started</a>
+                        <a href="#features" class="btn-outline">Learn more</a>                    
+                    </div>
             </div>
 
             <div class="hero-form-section">
                 <div class="auth-card">
-                    <center><h2 class="auth-card-title">Welcome!</h2></center>
-                    
+                    <center><h2 class="auth-card-title">Welcome!</h2></center>                    
                     {% if error %}
                     <div class="auth-error">
                         <span class="material-symbols-rounded" style="font-size: 18px;">error</span>
@@ -75,25 +77,49 @@
     </div>
 
     <section id="features" class="landing-section">
-        <h2 class="section-title">Core Features</h2>
+        <h2 class="section-title">Features</h2>
+        <div class="title-divider"><hr></div>
         <div class="features-grid">
             <div class="feature-card">
-                <span class="material-symbols-rounded">security</span>
-                <h3>Secure Architecture</h3>
-                <p>Built with robust security protocols and encrypted password hashing to ensure your workflow and personal data remain protected.</p>
+                <span class="material-symbols-rounded">smart_toy</span>
+                <h3>AI Assistant</h3>
+                <p>Understands prompts and helps manage your workflow.</p>
             </div>
             <div class="feature-card">
                 <span class="material-symbols-rounded">schedule</span>
                 <h3>Task Management</h3>
                 <p>Never miss a deadline. Set reminders, manage academic projects, and keep your daily schedule strictly organized.</p>
             </div>
+            <div class="feature-card">
+                <span class="material-symbols-rounded">notifications_active</span>
+                <h3>Smart Reminders</h3>
+                <p>Stay updated with automated alerts and schedules.</p>
+            </div>
         </div>
     </section>
 
-    <section id="about" class="landing-section" style="background-color: #1a1a1c;">
-        <h2 class="section-title">About Neo</h2>
-        <div style="max-width: 800px; margin: 0 auto; text-align: center; line-height: 1.8; color: #a0a0a0; font-size: 18px;">
-            <p>Neo is an ongoing developmental project by Caraga State University - CC BSIT Students.</p>
+    <section id="about-us" class="landing-section">
+        <h2 class="section-title">Meet the Developers</h2>
+        <div class="title-divider"><hr></div>
+        
+        <p class="team-subtitle">
+            The minds behind Neo — building your AI-powered assistant.
+        </p>
+
+        <div class="team-grid">
+            
+            <div class="team-card">
+                <img src="/static/images/devIcon.jpg" alt="Developer 1">
+                <h3>Marc Elson M. Rebato</h3>
+                <p class="role">Developer</p>
+            </div>
+
+            <div class="team-card">
+                <img src="/static/images/devIcon.jpg" alt="Developer 2">
+                <h3>Eliruzel M. Almonia</h3>
+                <p class="role">Developer</p>
+            </div>
+
         </div>
     </section>
 
