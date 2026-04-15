@@ -6,23 +6,20 @@ document.addEventListener("DOMContentLoaded", function () {
     // relying on previousElementSibling, which breaks if the
     // DOM structure changes even slightly.
     // =========================================================
-    const togglePasswordIcons = document.querySelectorAll('.toggle-password');
-
-    togglePasswordIcons.forEach(icon => {
+    document.querySelectorAll('.toggle-password').forEach(icon => {
         icon.addEventListener('click', function () {
-            const inputField = this.closest('.input-wrapper')?.querySelector('input');
 
-            if (!inputField) return; // guard: skip if input not found
+            const wrapper = this.closest('.input-with-icon');
+            const inputField = wrapper?.querySelector('input');
 
-            if (inputField.type === "password") {
-                inputField.type = "text";
-                this.textContent = "visibility_off";
-                this.title = "Hide Password";
-            } else {
-                inputField.type = "password";
-                this.textContent = "visibility";
-                this.title = "Show Password";
-            }
+            if (!inputField) return;
+
+            const isPassword = inputField.type === "password";
+            inputField.type = isPassword ? "text" : "password";
+
+            // toggle Material Symbols icon
+            this.textContent = isPassword ? "visibility_off" : "visibility";
+            this.title = isPassword ? "Hide Password" : "Show Password";
         });
     });
 
