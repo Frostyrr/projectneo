@@ -754,7 +754,7 @@ input:checked + .slider:before {
     flex: 1;
     background: linear-gradient(90deg, rgba(30, 87, 55, 1) 0%, rgb(4, 167, 91) 100%) !important;
     color: rgb(232, 232, 232) !important;
-    border: none;
+    border: 1px solid green;
     padding: 10px 22px;
     font-size: 13.5px;
     font-weight: 600;

@@ -40,10 +40,28 @@ flex: 1;
     display: flex;
     line-height: 1.6;
     font-size: 16px;
-    max-width: 900px;   /* Match the input box width */
-    margin: 0 auto;     /* Center the messages */
+    max-width: 900px;
+    margin: 0 auto;
     width: 100%;
-    animation: fadeIn 0.3s ease;
+    animation: slideUpFade 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    opacity: 0; 
+    transform: translateY(15px);
+}
+
+@keyframes slideUpFade {
+    0% {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Hide actions during typing animation */
+.message-actions.hidden-during-typing {
+    display: none;
 }
 
 .chat-message.user {

@@ -258,6 +258,12 @@
      color: #202124; 
 }
 
+[data-theme="light"] .edit-email.btn {
+    background: rgb(0, 113, 58);
+    border: 1px solid rgba(74, 222, 150, 0.2);
+    color: #4ade96;
+}
+
 /* ─── Toggle Switch ────────────────────────────────────────── */
 
 .slider:before {
@@ -306,4 +312,30 @@ input:checked + .slider:before {
     background: rgba(255, 77, 79, 0.12);
     border-color: #ff6b6d;
     box-shadow: 0 0 16px rgba(255, 77, 79, 0.15);
+}
+
+/* light mode verify old email modal */
+
+#old-email-display {
+    color: rgb(22, 22, 22);
+}
+
+#cancel-verify-email-btn:hover {
+    color: rgb(22, 22, 22);
+    box-shadow: 0 0 20px rgba(74, 222, 150, 0.05);
+
+}
+
+#cancel-old-email-otp-btn:hover {
+    color: rgb(22, 22, 22);
+    box-shadow: 0 0 20px rgba(74, 222, 150, 0.05);
+}
+
+.material-symbols-rounded.verify-icon-large {
+    color: green;
+    background: rgba(38, 215, 38, 0.29);
+}
+
+.recent-list li a:hover {
+    background-color: rgb(236, 236, 236);
 }

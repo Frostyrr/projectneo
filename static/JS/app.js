@@ -168,7 +168,7 @@ class NeoApp {
 
             // Render Bot Response
             if (responseData.reply) {
-                this.ui.appendMessage(responseData.reply, "bot");
+                this.ui.appendMessage(responseData.reply, "bot", true);
             } else if (responseData.error) {
                 this.ui.appendMessage(`❌ Analysis Failed: ${responseData.error}`, "bot");
             }

@@ -4,7 +4,7 @@ class ChatRenderer {
         this.recentList = recentList;
     }
 
-    appendMessage(message, sender) {
+    appendMessage(message, sender, animate = false) {
         const msgDiv = document.createElement("div");
         msgDiv.classList.add("chat-message", sender);
 
@@ -26,9 +26,6 @@ class ChatRenderer {
         contentDiv.classList.add("msg-content");
 
         if (sender === "bot") {
-            contentDiv.innerHTML = marked.parse(message);
-            innerWrapper.appendChild(contentDiv);
-
             const actionsDiv = document.createElement("div");
             actionsDiv.classList.add("message-actions");
 
@@ -48,7 +45,48 @@ class ChatRenderer {
             });
 
             actionsDiv.appendChild(copyBtn);
-            innerWrapper.appendChild(actionsDiv);
+
+            // --- ChatGPT Typewriter Animation Logic ---
+            if (animate) {
+                let index = 0;
+                innerWrapper.appendChild(contentDiv);
+                msgDiv.appendChild(innerWrapper);
+                this.chatBox.appendChild(msgDiv);
+                
+                // Simulate variable typing speed/token streaming
+                const typeWriter = () => {
+                    if (index < message.length) {
+                        // Reveal chunks of 2-5 characters for a fast, natural streaming feel
+                        const chunkSize = Math.floor(Math.random() * 4) + 2; 
+                        index += chunkSize;
+                        if (index > message.length) index = message.length;
+
+                        const currentText = message.substring(0, index);
+                        
+                        // Parse current markdown and append the blinking cursor
+                        contentDiv.innerHTML = marked.parse(currentText) + '<span class="gpt-cursor"></span>';
+                        
+                        // Auto-scroll while typing
+                        this.chatBox.scrollTop = this.chatBox.scrollHeight;
+                        
+                        // 15ms delay feels very similar to OpenAI's token stream
+                        setTimeout(typeWriter, 15);
+                    } else {
+                        // Typing finished: Remove cursor, render final pristine Markdown, show copy button
+                        contentDiv.innerHTML = marked.parse(message);
+                        innerWrapper.appendChild(actionsDiv);
+                        this.chatBox.scrollTop = this.chatBox.scrollHeight;
+                    }
+                };
+                
+                typeWriter(); // Start animation
+                return; // Exit early since we already appended msgDiv
+            } else {
+                // No animation (e.g., loading chat history)
+                contentDiv.innerHTML = marked.parse(message);
+                innerWrapper.appendChild(contentDiv);
+                innerWrapper.appendChild(actionsDiv);
+            }
         } else {
             contentDiv.innerHTML = message;
             innerWrapper.appendChild(contentDiv);
