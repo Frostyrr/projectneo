@@ -200,7 +200,6 @@ class NeoAssistant:
         }
         
         try:
-            # Note: Hardcoded specific endpoint for vision model as per your original code
             response = requests.post("https://api.groq.com/openai/v1/chat/completions", headers=headers, json=payload)
             response.raise_for_status()
             return response.json()["choices"][0]["message"]["content"]
