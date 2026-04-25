@@ -2,6 +2,7 @@ from flask import Blueprint, request, jsonify, session, render_template, redirec
 from database import Database
 from config import Config
 from datetime import datetime, timedelta
+from extensions import reminder_service
 
 reminder_bp = Blueprint('reminder', __name__)
 db = Database(Config.MONGO_URI)
@@ -13,8 +14,8 @@ def reminders_page():
     
     username = session['user'] # FIXED
     
-    all_reminders = db.get_reminders(username)
-    tasks = db.get_tasks(username)
+    all_reminders = reminder_service.get_reminders(username)
+    tasks = reminder_service.get_tasks(username)
     
     enriched_reminders = []
     for reminder in all_reminders:
@@ -48,7 +49,7 @@ def get_reminders_api():
         return jsonify({'error': 'Not logged in'}), 401
     
     username = session['user'] # FIXED
-    reminders = db.get_reminders(username)
+    reminders = reminder_service.get_reminders(username)
     return jsonify({'reminders': reminders})
 
 @reminder_bp.route('/api/reminders/add', methods=['POST'])
@@ -64,7 +65,7 @@ def add_reminder():
     reminder_time = data['reminder_time']
     reminder_note = data.get('reminder_note', '')
     
-    db.save_reminder(username, source_type, source_id, reminder_time, reminder_note)
+    reminder_service.save_reminder(username, source_type, source_id, reminder_time, reminder_note)
     return jsonify({'success': True, 'message': 'Reminder added'})
 
 @reminder_bp.route('/api/reminders/snooze', methods=['POST'])
@@ -84,7 +85,7 @@ def snooze_reminder():
     else:
         new_time = datetime.now() + timedelta(minutes=int(duration))
     
-    db.update_reminder(reminder_id, reminder_time=new_time)
+    reminder_service.update_reminder(reminder_id, reminder_time=new_time)
     return jsonify({'success': True, 'new_time': new_time.isoformat()})
 
 @reminder_bp.route('/api/reminders/complete', methods=['POST'])
@@ -93,7 +94,7 @@ def complete_reminder():
         return jsonify({'error': 'Not logged in'}), 401
     
     data = request.json
-    db.update_reminder(data['reminder_id'], is_completed=True)
+    reminder_service.update_reminder(data['reminder_id'], is_completed=True)
     return jsonify({'success': True})
 
 @reminder_bp.route('/api/reminders/dismiss', methods=['POST'])
@@ -102,5 +103,5 @@ def dismiss_reminder():
         return jsonify({'error': 'Not logged in'}), 401
     
     data = request.json
-    db.update_reminder(data['reminder_id'], is_dismissed=True)
+    reminder_service.update_reminder(data['reminder_id'], is_dismissed=True)
     return jsonify({'success': True})

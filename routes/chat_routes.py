@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, jsonify, session
 import base64
 import uuid
-from extensions import db, bot
+from extensions import db, bot, chat_service
 from ai_bot import parse_natural_time
 
 # Blueprint for all chat-related API routes
@@ -37,7 +37,7 @@ def api_chat():
             task_text = session.pop("pending_task")
 
             # Save task with default "Not set" schedule
-            db.save_task(username, task_text, "Not set", "Not set") 
+            chat_service.save_task(username, task_text, "Not set", "Not set") 
 
             return jsonify({
                 "reply": f"✅ Got it! I've saved '{task_text}' without a schedule. You can set a time later. What else can I help you with?",
@@ -50,7 +50,7 @@ def api_chat():
         # If valid schedule detected, save task with time/date
         if fallback_time != "Not set" and fallback_date != "Not set":
             task_text = session.pop("pending_task")
-            db.save_task(username, task_text, fallback_time, fallback_date)
+            chat_service.save_task(username, task_text, fallback_time, fallback_date)
 
             return jsonify({
                 "reply": f"✅ Task added: '{task_text}' at {fallback_time} on {fallback_date}",
@@ -101,7 +101,7 @@ def api_chat():
             })
     
         # Save task if everything is complete
-        db.save_task(username, parsed["task"], parsed["time"], parsed["date"])
+        chat_service.save_task(username, parsed["task"], parsed["time"], parsed["date"])
 
         return jsonify({
             "reply": f"✅ Task added: '{parsed['task']}' at {parsed['time']} on {parsed['date']}",
@@ -153,14 +153,14 @@ def api_analyze_image():
         username = session["user"]
 
         # Load existing chat history
-        messages = db.load_chat(chat_id)
+        messages = chat_service.load_chat(chat_id)
 
         # Add the image prompt and AI response to chat history
         messages.append({"role": "user", "content": f"[Uploaded Image] {user_prompt}"})
         messages.append({"role": "assistant", "content": ai_analysis})
         
         # Save updated chat history
-        db.save_chat(chat_id, username, messages) 
+        chat_service.save_chat(chat_id, username, messages) 
         
         return jsonify({"reply": ai_analysis, "chat_id": chat_id})
 
@@ -180,7 +180,7 @@ def get_user_chats():
     if "user" not in session:
         return jsonify([]), 401
 
-    return jsonify(db.get_user_chats(session["user"]))
+    return jsonify(chat_service.get_user_chats(session["user"]))
 
 
 # =====================
@@ -193,7 +193,7 @@ def load_specific_chat(chat_id):
     if "user" not in session:
         return jsonify({"error": "Unauthorized"}), 401
 
-    return jsonify(db.load_chat(chat_id))
+    return jsonify(chat_service.load_chat(chat_id))
 
 
 # =====================
@@ -209,7 +209,7 @@ def rename_chat(chat_id):
     new_title = request.json.get("title")
 
     if new_title:
-        db.rename_chat(chat_id, new_title)
+        chat_service.rename_chat(chat_id, new_title)
         return jsonify({"success": True})
 
     return jsonify({"error": "No title provided"}), 400
@@ -225,7 +225,7 @@ def delete_chat(chat_id):
     if "user" not in session:
         return jsonify({"error": "Unauthorized"}), 401
 
-    db.delete_chat(chat_id)
+    chat_service.delete_chat(chat_id)
 
     return jsonify({"success": True})
 
@@ -243,6 +243,6 @@ def toggle_pin_chat(chat_id):
     # Frontend sends whether the chat should be pinned or not
     is_pinned = request.json.get("is_pinned", False)
 
-    db.toggle_pin_chat(chat_id, is_pinned)
+    chat_service.toggle_pin_chat(chat_id, is_pinned)
 
     return jsonify({"success": True})

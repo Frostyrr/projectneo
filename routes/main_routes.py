@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, session, redirect, url_for
-from extensions import db
+from extensions import db, user_service
 
 main_bp = Blueprint('main', __name__)
 
@@ -13,7 +13,7 @@ def home():
 def chat():
     if "user" not in session:
         return redirect(url_for("auth.login"))
-    user_data = db.get_user(session["user"])
+    user_data = user_service.get_user_data(session["user"])
     email = user_data.get("email", "") if user_data else ""
     
     return render_template("index.html", email=email)
