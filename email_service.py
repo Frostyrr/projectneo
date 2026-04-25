@@ -170,7 +170,7 @@ class EmailService:
             "Reset Your Password",
             "Use this code to reset your password",
             otp,
-            "#ff6b6d",
+            "#4ade96",
             "If you didn’t request this, secure your account immediately."
         )
 
@@ -179,7 +179,7 @@ class EmailService:
             "Verify Email Change",
             "Confirm your request to update your email",
             otp,
-            "#fb923c",
+            "#4ade96",
             "If this wasn’t you, secure your account immediately."
         )
 
