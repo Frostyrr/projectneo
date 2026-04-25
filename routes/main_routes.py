@@ -17,6 +17,7 @@ def chat():
     email = user_data.get("email", "") if user_data else ""
     
     return render_template("index.html", email=email)
+
 @main_bp.route("/schedule")
 def schedule():
     if "user" not in session:

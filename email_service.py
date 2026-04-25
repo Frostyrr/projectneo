@@ -1,6 +1,5 @@
 import requests
 
-
 class EmailService:
     def __init__(self, script_url, secret_token):
         self.script_url = script_url
